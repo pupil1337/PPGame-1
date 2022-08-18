@@ -1,0 +1,13 @@
+# IDE
+.idea/
+.vs/
+/Plugins/Developer/
+
+# Project
+Binaries/
+Content/Collections/
+Content/Developers/
+DerivedDataCache/
+Intermediate/
+Saved/
+/PPGame.sln
