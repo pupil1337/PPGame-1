@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PPCharacterCameraBehavior.h"
+#include "PPCameraBehavior.h"
 
-void UPPCharacterCameraBehavior::SetRotationMode(EPPRotationMode RotationMode)
+void UPPCameraBehavior::SetRotationMode(EPPRotationMode RotationMode)
 {
 	bVelocityDirection = RotationMode == EPPRotationMode::VelocityDirection;
 	bLookingDirection = RotationMode == EPPRotationMode::LookingDirection;

@@ -3,7 +3,7 @@
 
 #include "PPPlayerCameraManager.h"
 
-#include "PPCharacterCameraBehavior.h"
+#include "PPCameraBehavior.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PPGame/GameFramework/PPCharacter.h"
 
@@ -33,7 +33,7 @@ void APPPlayerCameraManager::OnPossess(APPCharacter* NewCharacter)
 	ControlledCharacter = NewCharacter;
 
 	// Update references in the Camera Behavior AnimBP.
-	UPPCharacterCameraBehavior* CastedBehv = Cast<UPPCharacterCameraBehavior>(CameraBehavior->GetAnimInstance());
+	UPPCameraBehavior* CastedBehv = Cast<UPPCameraBehavior>(CameraBehavior->GetAnimInstance());
 	if (CastedBehv)
 	{
 		// todo

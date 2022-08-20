@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
 #include "PPGame/Library/PPAniminstanceEnumLibrary.h"
-#include "PPCharacterCameraBehavior.generated.h"
+#include "PPCameraBehavior.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class PPGAME_API UPPCharacterCameraBehavior : public UAnimInstance
+class PPGAME_API UPPCameraBehavior : public UAnimInstance
 {
 	GENERATED_BODY()
 
