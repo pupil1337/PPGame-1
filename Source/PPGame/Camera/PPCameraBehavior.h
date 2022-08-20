@@ -21,14 +21,14 @@ public:
 	// 移动状态
 	
 	
-protected:
+private:
 	// 转向方式
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CameraInstance")
+	UPROPERTY(BlueprintReadOnly, Category = "CameraInstance", meta = (AllowPrivateAccess = "true"))
 	bool bLookingDirection = false;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CameraInstance")
+	UPROPERTY(BlueprintReadOnly, Category = "CameraInstance", meta = (AllowPrivateAccess = "true"))
 	bool bVelocityDirection = false;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CameraInstance")
+	UPROPERTY(BlueprintReadOnly, Category = "CameraInstance", meta = (AllowPrivateAccess = "true"))
 	bool bAiming = false;
 };
