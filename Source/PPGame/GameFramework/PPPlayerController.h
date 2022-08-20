@@ -9,6 +9,7 @@
 
 class UInputMappingContext;
 class UInputAction;
+class APPCharacter;
 
 /**
  * 
@@ -31,9 +32,13 @@ class PPGAME_API APPPlayerController : public APlayerController
 	TObjectPtr<UInputAction> IA_TurnRight;
 	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
 	TObjectPtr<UInputAction> IA_TurnUp;
+
+public:
+	virtual void OnRep_Pawn() override;
 	
 protected:
 	virtual void SetupInputComponent() override;
+	virtual void OnPossess(APawn* InPawn) override;
 
 private:
 	virtual void MoveForward(const FInputActionValue& Value);
@@ -41,4 +46,6 @@ private:
 	virtual void MoveJump(const FInputActionValue& Value);
 	virtual void TurnRight(const FInputActionValue& Value);
 	virtual void TurnUp(const FInputActionValue& Value);
+
+	virtual void SetUpCamera(APawn* InPawn);
 };

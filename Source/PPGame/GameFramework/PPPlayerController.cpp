@@ -6,6 +6,14 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "PPCharacter.h"
+#include "PPGame/Camera/PPPlayerCameraManager.h"
+
+void APPPlayerController::OnRep_Pawn()
+{
+	Super::OnRep_Pawn();
+
+	SetUpCamera(GetPawn());
+}
 
 void APPPlayerController::SetupInputComponent()
 {
@@ -53,6 +61,13 @@ void APPPlayerController::SetupInputComponent()
 	}
 }
 
+void APPPlayerController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	SetUpCamera(InPawn);
+}
+
 void APPPlayerController::MoveForward(const FInputActionValue& Value)
 {
 	if (APPCharacter* PPCharacter = Cast<APPCharacter>(GetPawn()))
@@ -85,5 +100,16 @@ void APPPlayerController::TurnRight(const FInputActionValue& Value)
 void APPPlayerController::TurnUp(const FInputActionValue& Value)
 {
 	AddPitchInput(Value.GetMagnitude());
+}
+
+void APPPlayerController::SetUpCamera(APawn* InPawn)
+{
+	check(Cast<APPCharacter>(InPawn))
+	check(Cast<APPPlayerCameraManager>(PlayerCameraManager))
+	
+	if (APPPlayerCameraManager* PPPlayerCameraManager = Cast<APPPlayerCameraManager>(PlayerCameraManager))
+	{
+		PPPlayerCameraManager->OnPossess(Cast<APPCharacter>(InPawn));
+	}
 }
 

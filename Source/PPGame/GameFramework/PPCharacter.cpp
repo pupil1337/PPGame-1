@@ -3,6 +3,8 @@
 
 #include "PPCharacter.h"
 
+const FName NAME_FP_Camera(TEXT("FP_Camera"));
+
 APPCharacter::APPCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -25,5 +27,29 @@ void APPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+}
+
+void APPCharacter::GetCameraParameters(float& TPFOVOut, float& FPFOVOut, bool& bRightShoulderOut) const
+{
+	TPFOVOut = ThirdPersonFOV;
+	FPFOVOut = FirstPersonFOV;
+	bRightShoulderOut = bRightShoulder;
+}
+
+FTransform APPCharacter::GetThirdPersonPivotTarget() const
+{
+	return GetActorTransform();
+}
+
+FVector APPCharacter::GetFirstPersonCameraTarget() const
+{
+	return GetMesh()->GetSocketLocation(NAME_FP_Camera);
+}
+
+ECollisionChannel APPCharacter::GetThirdPersonTraceParams(FVector& TraceOrigin, float& TraceRadius)
+{
+	TraceOrigin = GetActorLocation();
+	TraceRadius = 10.0f;
+	return ECC_Visibility;
 }
 

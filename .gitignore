@@ -1,7 +1,9 @@
 # IDE
+ #Rider
 .idea/
+ #Visual Studio
 .vs/
-/Plugins/Developer/
+*.user
 
 # Project
 Binaries/
@@ -9,5 +11,9 @@ Content/Collections/
 Content/Developers/
 DerivedDataCache/
 Intermediate/
+/Plugins/Developer/
 Saved/
+Script/
 /PPGame.sln
+ #dont know why generate it .ini
+Config/HoloLens
