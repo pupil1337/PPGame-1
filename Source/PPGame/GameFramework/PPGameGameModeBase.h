@@ -13,5 +13,4 @@ UCLASS()
 class PPGAME_API APPGameGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
 };
