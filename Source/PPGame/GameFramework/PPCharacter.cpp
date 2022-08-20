@@ -3,12 +3,16 @@
 
 #include "PPCharacter.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+
 const FName NAME_FP_Camera(TEXT("FP_Camera"));
 
 APPCharacter::APPCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 }
 
 void APPCharacter::BeginPlay()
