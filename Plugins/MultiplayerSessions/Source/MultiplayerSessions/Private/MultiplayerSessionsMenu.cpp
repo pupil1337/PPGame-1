@@ -115,7 +115,7 @@ void UMultiplayerSessionsMenu::OnCreateSessionComplete(bool bWasSuccessful)
 	{
 		if (UWorld* World = GetWorld())
 		{
-			World->ServerTravel("/MultiplayerSessions/MultiplayerSessionsMap_Lobby?listen");
+			World->ServerTravel("/Game/Maps/Lobby/LobbyMap?listen");
 		}
 	}
 	else
