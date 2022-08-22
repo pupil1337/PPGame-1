@@ -104,12 +104,12 @@ void APPPlayerController::TurnUp(const FInputActionValue& Value)
 
 void APPPlayerController::SetUpCamera(APawn* InPawn)
 {
-	check(Cast<APPCharacter>(InPawn))
-	check(Cast<APPPlayerCameraManager>(PlayerCameraManager))
-	
-	if (APPPlayerCameraManager* PPPlayerCameraManager = Cast<APPPlayerCameraManager>(PlayerCameraManager))
+	if (InPawn && PlayerCameraManager)
 	{
-		PPPlayerCameraManager->OnPossess(Cast<APPCharacter>(InPawn));
+		if (APPPlayerCameraManager* PPPlayerCameraManager = Cast<APPPlayerCameraManager>(PlayerCameraManager))
+		{
+			PPPlayerCameraManager->OnPossess(Cast<APPCharacter>(InPawn));
+		}
 	}
 }
 

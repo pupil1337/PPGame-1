@@ -1,0 +1,1 @@
+start C:\ue\UE_5.0\Engine\Binaries\Win64\UnrealEditor-Win64-DebugGame.exe C:\Users\pupil\Desktop\Learn\PPGame\PPGame.uproject -game

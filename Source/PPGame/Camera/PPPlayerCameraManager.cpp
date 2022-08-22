@@ -29,28 +29,30 @@ APPPlayerCameraManager::APPPlayerCameraManager()
 
 void APPPlayerCameraManager::OnPossess(APPCharacter* NewCharacter)
 {
-	check(NewCharacter);
-	ControlledCharacter = NewCharacter;
-
-	// Update references in the Camera Behavior AnimBP.
-	UPPCameraBehavior* CastedBehv = Cast<UPPCameraBehavior>(CameraBehavior->GetAnimInstance());
-	if (CastedBehv)
+	if (NewCharacter)
 	{
-		// todo
-		// NewCharacter->SetCameraBehavior(CastedBehv);
-		// CastedBehv->MovementState = NewCharacter->GetMovementState();
-		// CastedBehv->MovementAction = NewCharacter->GetMovementAction();
-		// CastedBehv->bRightShoulder = NewCharacter->IsRightShoulder();
-		// CastedBehv->Gait = NewCharacter->GetGait();
-		// CastedBehv->SetRotationMode(NewCharacter->GetRotationMode());
-		// CastedBehv->Stance = NewCharacter->GetStance();
-		// CastedBehv->ViewMode = NewCharacter->GetViewMode();
-	}
+		ControlledCharacter = NewCharacter;
 
-	// Initial position
-	const FVector& TPSLoc = ControlledCharacter->GetActorTransform().GetLocation();
-	SetActorLocation(TPSLoc);
-	SmoothedPivotTarget.SetLocation(TPSLoc);
+		// Update references in the Camera Behavior AnimBP.
+		UPPCameraBehavior* CastedBehv = Cast<UPPCameraBehavior>(CameraBehavior->GetAnimInstance());
+		if (CastedBehv)
+		{
+			// todo
+			// NewCharacter->SetCameraBehavior(CastedBehv);
+			// CastedBehv->MovementState = NewCharacter->GetMovementState();
+			// CastedBehv->MovementAction = NewCharacter->GetMovementAction();
+			// CastedBehv->bRightShoulder = NewCharacter->IsRightShoulder();
+			// CastedBehv->Gait = NewCharacter->GetGait();
+			// CastedBehv->SetRotationMode(NewCharacter->GetRotationMode());
+			// CastedBehv->Stance = NewCharacter->GetStance();
+			// CastedBehv->ViewMode = NewCharacter->GetViewMode();
+		}
+
+		// Initial position
+		const FVector& TPSLoc = ControlledCharacter->GetActorTransform().GetLocation();
+		SetActorLocation(TPSLoc);
+		SmoothedPivotTarget.SetLocation(TPSLoc);
+	}
 }
 
 void APPPlayerCameraManager::UpdateViewTargetInternal(FTViewTarget& OutVT, float DeltaTime)
