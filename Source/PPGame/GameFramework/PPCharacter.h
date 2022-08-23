@@ -6,11 +6,16 @@
 #include "GameFramework/Character.h"
 #include "PPCharacter.generated.h"
 
+class UPPCompBase;
+
 UCLASS()
 class PPGAME_API APPCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Components")
+	TArray<TSubclassOf<UPPCompBase>> SimulatedOnlyClass;
+	
 	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Camera System")
 	float ThirdPersonFOV = 90.0f;
 	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Camera System")
