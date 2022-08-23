@@ -9,7 +9,7 @@
 /**
  * 
  */
-UCLASS( Blueprintable, BlueprintType )
+UCLASS( Abstract, Blueprintable )
 class PPGAME_API UPPShowPlayerName : public UPPCompBase
 {
 	GENERATED_BODY()
