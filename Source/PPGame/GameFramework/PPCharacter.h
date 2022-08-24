@@ -6,25 +6,11 @@
 #include "GameFramework/Character.h"
 #include "PPCharacter.generated.h"
 
-class UPPCompBase;
-
 UCLASS()
 class PPGAME_API APPCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	// 角色身上组件
-	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Components")
-	TArray<TSubclassOf<UPPCompBase>> MultiClasses;
-	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Components")
-	TArray<TSubclassOf<UPPCompBase>> ServerOnlyClasses;
-	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Components")
-	TArray<TSubclassOf<UPPCompBase>> ClientsOnlyClasses;
-	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Components")
-	TArray<TSubclassOf<UPPCompBase>> AutonomousOnlyClasses;
-	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Components")
-	TArray<TSubclassOf<UPPCompBase>> SimulatedOnlyClasses;
-	
 	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Camera System")
 	float ThirdPersonFOV = 90.0f;
 	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Camera System")
