@@ -32,6 +32,8 @@ class PPGAME_API APPPlayerController : public APlayerController
 	TObjectPtr<UInputAction> IA_TurnRight;
 	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
 	TObjectPtr<UInputAction> IA_TurnUp;
+	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	TObjectPtr<UInputAction> IA_ShowPlayerName;
 
 public:
 	virtual void OnRep_Pawn() override;
@@ -41,11 +43,12 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
 private:
-	virtual void MoveForward(const FInputActionValue& Value);
-	virtual void MoveRight(const FInputActionValue& Value);
-	virtual void MoveJump(const FInputActionValue& Value);
-	virtual void TurnRight(const FInputActionValue& Value);
-	virtual void TurnUp(const FInputActionValue& Value);
+	virtual void OnMoveForward(const FInputActionValue& Value);
+	virtual void OnMoveRight(const FInputActionValue& Value);
+	virtual void OnMoveJump(const FInputActionValue& Value);
+	virtual void OnTurnRight(const FInputActionValue& Value);
+	virtual void OnTurnUp(const FInputActionValue& Value);
+	virtual void OnShowPlayerName(const FInputActionValue& Value);
 
 	virtual void SetUpCamera(APawn* InPawn);
 };

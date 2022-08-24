@@ -6,6 +6,9 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "PPCharacter.h"
+#include "GameFramework/GameStateBase.h"
+#include "GameFramework/PlayerState.h"
+#include "Kismet/GameplayStatics.h"
 #include "PPGame/Camera/PPPlayerCameraManager.h"
 
 void APPPlayerController::OnRep_Pawn()
@@ -40,23 +43,27 @@ void APPPlayerController::SetupInputComponent()
 	{
 		if (IA_MoveForward)
 		{
-			EnhancedInputComponent->BindAction(IA_MoveForward, ETriggerEvent::Triggered, this, &ThisClass::MoveForward);
+			EnhancedInputComponent->BindAction(IA_MoveForward, ETriggerEvent::Triggered, this, &ThisClass::OnMoveForward);
 		}
 		if (IA_MoveRight)
 		{
-			EnhancedInputComponent->BindAction(IA_MoveRight, ETriggerEvent::Triggered, this, &ThisClass::MoveRight);
+			EnhancedInputComponent->BindAction(IA_MoveRight, ETriggerEvent::Triggered, this, &ThisClass::OnMoveRight);
 		}
 		if (IA_Jump)
 		{
-			EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &ThisClass::MoveJump);
+			EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &ThisClass::OnMoveJump);
 		}
 		if (IA_TurnRight)
 		{
-			EnhancedInputComponent->BindAction(IA_TurnRight, ETriggerEvent::Triggered, this, &ThisClass::TurnRight);
+			EnhancedInputComponent->BindAction(IA_TurnRight, ETriggerEvent::Triggered, this, &ThisClass::OnTurnRight);
 		}
 		if (IA_TurnUp)
 		{
-			EnhancedInputComponent->BindAction(IA_TurnUp, ETriggerEvent::Triggered, this, &ThisClass::TurnUp);
+			EnhancedInputComponent->BindAction(IA_TurnUp, ETriggerEvent::Triggered, this, &ThisClass::OnTurnUp);
+		}
+		if (IA_ShowPlayerName)
+		{
+			EnhancedInputComponent->BindAction(IA_ShowPlayerName, ETriggerEvent::Triggered, this, &ThisClass::OnShowPlayerName);
 		}
 	}
 }
@@ -68,7 +75,7 @@ void APPPlayerController::OnPossess(APawn* InPawn)
 	SetUpCamera(InPawn);
 }
 
-void APPPlayerController::MoveForward(const FInputActionValue& Value)
+void APPPlayerController::OnMoveForward(const FInputActionValue& Value)
 {
 	if (APPCharacter* PPCharacter = Cast<APPCharacter>(GetPawn()))
 	{
@@ -76,7 +83,7 @@ void APPPlayerController::MoveForward(const FInputActionValue& Value)
 	}
 }
 
-void APPPlayerController::MoveRight(const FInputActionValue& Value)
+void APPPlayerController::OnMoveRight(const FInputActionValue& Value)
 {
 	if (APPCharacter* PPCharacter = Cast<APPCharacter>(GetPawn()))
 	{
@@ -84,7 +91,7 @@ void APPPlayerController::MoveRight(const FInputActionValue& Value)
 	}
 }
 
-void APPPlayerController::MoveJump(const FInputActionValue& Value)
+void APPPlayerController::OnMoveJump(const FInputActionValue& Value)
 {
 	if (APPCharacter* PPCharacter = Cast<APPCharacter>(GetPawn()))
 	{
@@ -92,14 +99,34 @@ void APPPlayerController::MoveJump(const FInputActionValue& Value)
 	}
 }
 
-void APPPlayerController::TurnRight(const FInputActionValue& Value)
+void APPPlayerController::OnTurnRight(const FInputActionValue& Value)
 {
 	AddYawInput(Value.GetMagnitude());
 }
 
-void APPPlayerController::TurnUp(const FInputActionValue& Value)
+void APPPlayerController::OnTurnUp(const FInputActionValue& Value)
 {
 	AddPitchInput(Value.GetMagnitude());
+}
+
+void APPPlayerController::OnShowPlayerName(const FInputActionValue& Value)
+{
+	if (AGameStateBase* GameState = UGameplayStatics::GetGameState(this))
+	{
+		if (GameState->PlayerArray.Num() > 0)
+		{
+			for (auto it: GameState->PlayerArray)
+			{
+				if (it.Get() && it.Get()->GetPawn())
+				{
+					if (APPCharacter* ppCharacter = Cast<APPCharacter>(it.Get()->GetPawn()))
+					{
+						ppCharacter->SetOverheadPlayerName();
+					}
+				}
+			}
+		}
+	}
 }
 
 void APPPlayerController::SetUpCamera(APawn* InPawn)
