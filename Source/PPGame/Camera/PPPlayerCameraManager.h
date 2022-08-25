@@ -19,6 +19,11 @@ class PPGAME_API APPPlayerCameraManager : public APlayerCameraManager
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<USkeletalMeshComponent> CameraBehavior = nullptr;
 
+	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Camera System")
+	float ThirdPersonFOV = 90.0f;
+	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Camera System")
+	float FirstPersonFOV = 90.0f;
+	
 public:
 	APPPlayerCameraManager();
 

@@ -3,13 +3,11 @@
 
 #include "PPCharacter.h"
 
-#include "PPPlayerController.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerState.h"
 #include "PPGame/UMG/WidgetComponent/PPShowPlayerName.h"
 
-const FName NAME_FP_Camera(TEXT("FP_Camera"));
 
 APPCharacter::APPCharacter()
 {
@@ -74,29 +72,5 @@ void APPCharacter::Destroyed()
 	Super::Destroyed();
 
 	GetWorldTimerManager().ClearTimer(ShowPlayerNameHandle);
-}
-
-void APPCharacter::GetCameraParameters(float& TPFOVOut, float& FPFOVOut, bool& bRightShoulderOut) const
-{
-	TPFOVOut = ThirdPersonFOV;
-	FPFOVOut = FirstPersonFOV;
-	bRightShoulderOut = bRightShoulder;
-}
-
-FTransform APPCharacter::GetThirdPersonPivotTarget() const
-{
-	return GetActorTransform();
-}
-
-FVector APPCharacter::GetFirstPersonCameraTarget() const
-{
-	return GetMesh()->GetSocketLocation(NAME_FP_Camera);
-}
-
-ECollisionChannel APPCharacter::GetThirdPersonTraceParams(FVector& TraceOrigin, float& TraceRadius)
-{
-	TraceOrigin = GetActorLocation();
-	TraceRadius = 10.0f;
-	return ECC_Visibility;
 }
 

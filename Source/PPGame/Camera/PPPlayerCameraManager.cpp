@@ -7,6 +7,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "PPGame/GameFramework/PPCharacter.h"
 
+const FName NAME_FP_Camera(TEXT("FP_Camera"));
+
 const FName NAME_CameraBehavior(TEXT("CameraBehavior"));
 const FName NAME_CameraOffset_X(TEXT("CameraOffset_X"));
 const FName NAME_CameraOffset_Y(TEXT("CameraOffset_Y"));
@@ -117,12 +119,8 @@ bool APPPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Loca
 	}
 
 	// Step 1: Get Camera Parameters from CharacterBP via the Camera Interface
-	const FTransform& PivotTarget = ControlledCharacter->GetThirdPersonPivotTarget();
-	const FVector& FPTarget = ControlledCharacter->GetFirstPersonCameraTarget();
-	float TPFOV = 90.0f;
-	float FPFOV = 90.0f;
-	bool bRightShoulder = false;
-	ControlledCharacter->GetCameraParameters(TPFOV, FPFOV, bRightShoulder);
+	const FTransform& PivotTarget = ControlledCharacter->GetActorTransform();
+	const FVector& FPTarget = ControlledCharacter->GetMesh()->GetSocketLocation(NAME_FP_Camera);
 
 	// Step 2: Calculate Target Camera Rotation. Use the Control Rotation and interpolate for smooth camera rotation.
 	TargetCameraRotation = FMath::RInterpTo(GetCameraRotation(),
@@ -166,9 +164,8 @@ bool APPPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Loca
 	// Step 6: Trace for an object between the camera and character to apply a corrective offset.
 	// Trace origins are set within the Character BP via the Camera Interface.
 	// Functions like the normal spring arm, but can allow for different trace origins regardless of the pivot
-	FVector TraceOrigin;
-	float TraceRadius;
-	ECollisionChannel TraceChannel = ControlledCharacter->GetThirdPersonTraceParams(TraceOrigin, TraceRadius);
+	FVector TraceOrigin = PivotTarget.GetLocation();
+	ECollisionChannel TraceChannel = ECC_Visibility;
 
 	UWorld* World = GetWorld();
 	check(World);
@@ -178,11 +175,9 @@ bool APPPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Loca
 	Params.AddIgnoredActor(ControlledCharacter);
 
 	FHitResult HitResult;
-	const FCollisionShape SphereCollisionShape = FCollisionShape::MakeSphere(TraceRadius);
-	World->SweepSingleByChannel(HitResult, TraceOrigin, TargetCameraLocation, FQuat::Identity,
-	                                              TraceChannel, SphereCollisionShape, Params);
+	const FCollisionShape SphereCollisionShape = FCollisionShape::MakeSphere(10.0f);
+	World->SweepSingleByChannel(HitResult, TraceOrigin, TargetCameraLocation, FQuat::Identity, TraceChannel, SphereCollisionShape, Params);
 	
-
 	if (HitResult.IsValidBlockingHit())
 	{
 		TargetCameraLocation += HitResult.Location - HitResult.TraceEnd;
@@ -198,7 +193,7 @@ bool APPPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Loca
 
 	Location = TargetTransform.GetLocation();
 	Rotation = TargetTransform.Rotator();
-	FOV = FMath::Lerp(TPFOV, FPFOV, GetCameraBehaviorParam(NAME_Weight_FirstPerson));
+	FOV = FMath::Lerp(ThirdPersonFOV, FirstPersonFOV, GetCameraBehaviorParam(NAME_Weight_FirstPerson));
 
 	return true;
 }

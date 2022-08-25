@@ -15,20 +15,9 @@ class PPGAME_API APPCharacter : public ACharacter
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UWidgetComponent> PlayerNameComp;
-
-	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Camera System")
-	float ThirdPersonFOV = 90.0f;
-	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Camera System")
-	float FirstPersonFOV = 90.0f;
-	UPROPERTY(EditDefaultsOnly, Category = "PPCharacter|Camera System")
-	bool bRightShoulder = true;
 	
 public:
 	APPCharacter();
-	void GetCameraParameters(float& TPFOVOut, float& FPFOVOut, bool& bRightShoulderOut) const;
-	FTransform GetThirdPersonPivotTarget() const;
-	FVector GetFirstPersonCameraTarget() const;
-	virtual ECollisionChannel GetThirdPersonTraceParams(FVector& TraceOrigin, float& TraceRadius);
 	/** 显示角色头顶Steam昵称 */
 	virtual void SetOverheadPlayerName();
 
