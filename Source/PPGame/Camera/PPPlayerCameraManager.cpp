@@ -4,6 +4,7 @@
 #include "PPPlayerCameraManager.h"
 
 #include "PPCameraBehavior.h"
+#include "Components/CapsuleComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PPGame/GameFramework/PPCharacter.h"
 
@@ -119,7 +120,8 @@ bool APPPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Loca
 	}
 
 	// Step 1: Get Camera Parameters from CharacterBP via the Camera Interface
-	const FTransform& PivotTarget = ControlledCharacter->GetActorTransform();
+	const FVector& PivotTargetLocation = ControlledCharacter->GetActorLocation() + FVector::UpVector*ControlledCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + FVector::UpVector*10.0f;
+	const FQuat& PivotTargetRotation = ControlledCharacter->GetActorQuat();
 	const FVector& FPTarget = ControlledCharacter->GetMesh()->GetSocketLocation(NAME_FP_Camera);
 
 	// Step 2: Calculate Target Camera Rotation. Use the Control Rotation and interpolate for smooth camera rotation.
@@ -134,10 +136,10 @@ bool APPPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Loca
 	                     GetCameraBehaviorParam(NAME_PivotLagSpeed_Z));
 
 	const FVector& AxisIndpLag = CalculateAxisIndependentLag(SmoothedPivotTarget.GetLocation(),
-	                                                         PivotTarget.GetLocation(), TargetCameraRotation, LagSpd,
+	                                                         PivotTargetLocation, TargetCameraRotation, LagSpd,
 	                                                         DeltaTime);
 
-	SmoothedPivotTarget.SetRotation(PivotTarget.GetRotation());
+	SmoothedPivotTarget.SetRotation(PivotTargetRotation);
 	SmoothedPivotTarget.SetLocation(AxisIndpLag);
 	SmoothedPivotTarget.SetScale3D(FVector::OneVector);
 
@@ -164,16 +166,16 @@ bool APPPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Loca
 	// Step 6: Trace for an object between the camera and character to apply a corrective offset.
 	// Trace origins are set within the Character BP via the Camera Interface.
 	// Functions like the normal spring arm, but can allow for different trace origins regardless of the pivot
-	FVector TraceOrigin = PivotTarget.GetLocation();
-	ECollisionChannel TraceChannel = ECC_Visibility;
-
+	FVector TraceOrigin = PivotTargetLocation;
+	ECollisionChannel TraceChannel = ECC_Camera;
+	
 	UWorld* World = GetWorld();
 	check(World);
-
+	
 	FCollisionQueryParams Params;
 	Params.AddIgnoredActor(this);
 	Params.AddIgnoredActor(ControlledCharacter);
-
+	
 	FHitResult HitResult;
 	const FCollisionShape SphereCollisionShape = FCollisionShape::MakeSphere(10.0f);
 	World->SweepSingleByChannel(HitResult, TraceOrigin, TargetCameraLocation, FQuat::Identity, TraceChannel, SphereCollisionShape, Params);

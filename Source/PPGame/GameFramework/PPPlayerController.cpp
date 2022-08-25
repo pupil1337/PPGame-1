@@ -22,15 +22,6 @@ void APPPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	check(ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-	check(Cast<UEnhancedInputComponent>(InputComponent))
-	check(BaseIMC.Get())
-	check(IA_MoveForward.Get())
-	check(IA_MoveRight.Get())
-	check(IA_Jump.Get())
-	check(IA_TurnRight.Get())
-	check(IA_TurnUp.Get())
-
 	if (UEnhancedInputLocalPlayerSubsystem* EnhancedInputLocalPlayerSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
 	{
 		if (BaseIMC)
@@ -107,6 +98,13 @@ void APPPlayerController::OnTurnRight(const FInputActionValue& Value)
 void APPPlayerController::OnTurnUp(const FInputActionValue& Value)
 {
 	AddPitchInput(Value.GetMagnitude());
+
+	// 限制输入角度 [0, 60] [270, 360]
+	const float NewRotationPitch = RotationInput.Pitch + GetControlRotation().Pitch;
+	if (NewRotationPitch > 60.0f && NewRotationPitch < 270.0f)
+	{
+		RotationInput.Pitch = 0.0f;
+	}
 }
 
 void APPPlayerController::OnShowPlayerName(const FInputActionValue& Value)
