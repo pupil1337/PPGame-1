@@ -7,6 +7,7 @@
 #include "PPCharacter.generated.h"
 
 class UWidgetComponent;
+class APPWeapon;
 
 UCLASS()
 class PPGAME_API APPCharacter : public ACharacter
@@ -18,25 +19,35 @@ class PPGAME_API APPCharacter : public ACharacter
 	
 public:
 	APPCharacter();
-	/** 显示角色头顶Steam昵称 */
-	virtual void SetOverheadPlayerName();
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	virtual void PostInitializeComponents() override;
+	
+	virtual void PossessedBy(AController* NewController) override;
+
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	virtual void Tick(float DeltaTime) override;
+
+	virtual void Destroyed() override;
+
+	virtual void OnRep_PlayerState() override;
 
 protected:
 	virtual void BeginPlay() override;
 
 public:
-	virtual void PossessedBy(AController* NewController) override;
-
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	virtual void PostInitializeComponents() override;
-
-	virtual void Tick(float DeltaTime) override;
-
-	virtual void OnRep_PlayerState() override;
-
-	virtual void Destroyed() override;
+	/** 显示角色头顶Steam昵称 */
+	virtual void SetOverheadPlayerName();
+	/** 设置新的可拾取武器 */
+	virtual void SetOverlapWeapon(APPWeapon* NewOverlapWeapon);
+	UFUNCTION()
+	virtual void OnRep_OverlapWeapon(APPWeapon* OldOverlapWeapon);
 
 private:
+	UPROPERTY(ReplicatedUsing = OnRep_OverlapWeapon)
+	APPWeapon* OverlapWeapon;
+	
 	FTimerHandle ShowPlayerNameHandle;
 };

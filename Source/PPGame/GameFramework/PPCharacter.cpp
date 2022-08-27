@@ -6,7 +6,9 @@
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerState.h"
+#include "Net/UnrealNetwork.h"
 #include "PPGame/UMG/WidgetComponent/PPShowPlayerName.h"
+#include "Weapon/PPWeapon.h"
 
 
 APPCharacter::APPCharacter()
@@ -21,6 +23,18 @@ APPCharacter::APPCharacter()
 	PlayerNameComp->SetVisibility(false);
 }
 
+void APPCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(APPCharacter, OverlapWeapon, COND_OwnerOnly)
+}
+
+void APPCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+}
+
 void APPCharacter::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
@@ -31,16 +45,6 @@ void APPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void APPCharacter::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-}
-
-void APPCharacter::OnRep_PlayerState()
-{
-	Super::OnRep_PlayerState();
-}
-
 void APPCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -49,6 +53,18 @@ void APPCharacter::BeginPlay()
 void APPCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void APPCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+}
+
+void APPCharacter::Destroyed()
+{
+	Super::Destroyed();
+
+	GetWorldTimerManager().ClearTimer(ShowPlayerNameHandle);
 }
 
 void APPCharacter::SetOverheadPlayerName()
@@ -68,10 +84,25 @@ void APPCharacter::SetOverheadPlayerName()
 	}
 }
 
-void APPCharacter::Destroyed()
+void APPCharacter::SetOverlapWeapon(APPWeapon* NewOverlapWeapon)
 {
-	Super::Destroyed();
+	APPWeapon* OldOverlapWeapon = OverlapWeapon;
+	OverlapWeapon = NewOverlapWeapon;
+	if (IsLocallyControlled())
+	{
+		OnRep_OverlapWeapon(OldOverlapWeapon);
+	}
+}
 
-	GetWorldTimerManager().ClearTimer(ShowPlayerNameHandle);
+void APPCharacter::OnRep_OverlapWeapon(APPWeapon* OldOverlapWeapon)
+{
+	if (OldOverlapWeapon)
+	{
+		OldOverlapWeapon->SetPickupTipVisibility(false);
+	}
+	if (OverlapWeapon)
+	{
+		OverlapWeapon->SetPickupTipVisibility(true);
+	}
 }
 
