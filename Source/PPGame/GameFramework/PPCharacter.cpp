@@ -18,6 +18,7 @@ APPCharacter::APPCharacter()
 
 	PlayerNameComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("ShowPlayerName"));
 	PlayerNameComp->SetupAttachment(RootComponent);
+	PlayerNameComp->SetVisibility(false);
 }
 
 void APPCharacter::PossessedBy(AController* NewController)
@@ -56,12 +57,12 @@ void APPCharacter::SetOverheadPlayerName()
 	{
 		if (APlayerState* tPlayerState = GetPlayerState())
 		{
-			PlayerNameComp->SetHiddenInGame(false);
+			PlayerNameComp->SetVisibility(true);
 			PlayerNameWidget->SetPlayerName(tPlayerState->GetPlayerName());
 			GetWorldTimerManager().ClearTimer(ShowPlayerNameHandle);
 			GetWorldTimerManager().SetTimer(ShowPlayerNameHandle, FTimerDelegate::CreateLambda([this]()
 			{
-				PlayerNameComp->SetHiddenInGame(true);
+				PlayerNameComp->SetVisibility(false);
 			}), 3.0f, false);
 		}
 	}
