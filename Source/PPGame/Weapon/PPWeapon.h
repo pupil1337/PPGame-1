@@ -18,6 +18,7 @@ enum class EWeaponState: uint8
 
 class USphereComponent;
 class UWidgetComponent;
+class APPCharacter;
 
 UCLASS()
 class PPGAME_API APPWeapon : public AActor
@@ -33,11 +34,12 @@ class PPGAME_API APPWeapon : public AActor
 	UPROPERTY(VisibleDefaultsOnly)
 	TObjectPtr<UWidgetComponent> PickTipComponent;
 	
-	UPROPERTY(VisibleDefaultsOnly)
-	EWeaponState WeaponState;
-	
 public:
 	APPWeapon();
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	void SetWeaponState(EWeaponState State);
 
 protected:
 	virtual void BeginPlay() override;
@@ -45,7 +47,14 @@ protected:
 public:
 	virtual void SetPickupTipVisibility(bool bVisibility);
 
+protected:
+	UFUNCTION()
+	virtual void OnRep_WeaponState(EWeaponState OldWeaponState);
+
 private:
+	UPROPERTY(ReplicatedUsing = OnRep_WeaponState)
+	EWeaponState WeaponState;
+	
 	UFUNCTION()
 	virtual void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
@@ -53,5 +62,4 @@ private:
 	UFUNCTION()
 	virtual void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
 };

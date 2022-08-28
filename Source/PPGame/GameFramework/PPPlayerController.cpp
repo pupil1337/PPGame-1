@@ -27,30 +27,30 @@ void APPPlayerController::SetupInputComponent()
 		if (BaseIMC)
 		{
 			EnhancedInputLocalPlayerSubsystem->AddMappingContext(BaseIMC, 9);
-		}
-	}
-
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
-	{
-		if (IA_MoveForward)
-		{
-			EnhancedInputComponent->BindAction(IA_MoveForward, ETriggerEvent::Triggered, this, &ThisClass::OnMoveForward);
-		}
-		if (IA_MoveRight)
-		{
-			EnhancedInputComponent->BindAction(IA_MoveRight, ETriggerEvent::Triggered, this, &ThisClass::OnMoveRight);
-		}
-		if (IA_TurnRight)
-		{
-			EnhancedInputComponent->BindAction(IA_TurnRight, ETriggerEvent::Triggered, this, &ThisClass::OnTurnRight);
-		}
-		if (IA_TurnUp)
-		{
-			EnhancedInputComponent->BindAction(IA_TurnUp, ETriggerEvent::Triggered, this, &ThisClass::OnTurnUp);
-		}
-		if (IA_ShowPlayerName)
-		{
-			EnhancedInputComponent->BindAction(IA_ShowPlayerName, ETriggerEvent::Triggered, this, &ThisClass::OnShowPlayerName);
+			
+			if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+			{
+				if (IA_MoveForward)
+				{
+					EnhancedInputComponent->BindAction(IA_MoveForward, ETriggerEvent::Triggered, this, &ThisClass::OnMoveForward);
+				}
+				if (IA_MoveRight)
+				{
+					EnhancedInputComponent->BindAction(IA_MoveRight, ETriggerEvent::Triggered, this, &ThisClass::OnMoveRight);
+				}
+				if (IA_TurnRight)
+				{
+					EnhancedInputComponent->BindAction(IA_TurnRight, ETriggerEvent::Triggered, this, &ThisClass::OnTurnRight);
+				}
+				if (IA_TurnUp)
+				{
+					EnhancedInputComponent->BindAction(IA_TurnUp, ETriggerEvent::Triggered, this, &ThisClass::OnTurnUp);
+				}
+				if (IA_ShowPlayerName)
+				{
+					EnhancedInputComponent->BindAction(IA_ShowPlayerName, ETriggerEvent::Triggered, this, &ThisClass::OnShowPlayerName);
+				}
+			}
 		}
 	}
 }

@@ -5,6 +5,7 @@
 
 #include "Components/SphereComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Net/UnrealNetwork.h"
 #include "PPGame/GameFramework/PPCharacter.h"
 
 APPWeapon::APPWeapon()
@@ -23,13 +24,6 @@ APPWeapon::APPWeapon()
 	AreaSphere->SetupAttachment(RootComponent);
 	AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	if (HasAuthority())
-	{
-		AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-		AreaSphere->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnComponentBeginOverlap);
-		AreaSphere->OnComponentEndOverlap.AddUniqueDynamic(this, &ThisClass::OnComponentEndOverlap);
-	}
 
 	// PickTipComponent
 	PickTipComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickupWidgetComponent"));
@@ -37,9 +31,45 @@ APPWeapon::APPWeapon()
 	PickTipComponent->SetVisibility(false);
 }
 
+void APPWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(APPWeapon, WeaponState, COND_SkipOwner)
+}
+
 void APPWeapon::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (HasAuthority())
+	{
+		AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+		AreaSphere->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnComponentBeginOverlap);
+		AreaSphere->OnComponentEndOverlap.AddUniqueDynamic(this, &ThisClass::OnComponentEndOverlap);
+	}
+}
+
+void APPWeapon::SetWeaponState(EWeaponState State)
+{
+	WeaponState = State;
+	switch (State)
+	{
+	case EWeaponState::EWS_Equipped:
+		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		break;
+	case EWeaponState::EWS_Dropped:
+		break;
+	default:
+		break;
+	}
+}
+
+void APPWeapon::OnRep_WeaponState(EWeaponState OldWeaponState)
+{
+	
 }
 
 void APPWeapon::SetPickupTipVisibility(bool bVisibility)

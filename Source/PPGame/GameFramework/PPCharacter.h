@@ -7,6 +7,7 @@
 #include "PPCharacter.generated.h"
 
 class UWidgetComponent;
+class UPPCombatComponent;
 class UInputMappingContext;
 class UInputAction;
 class APPWeapon;
@@ -16,13 +17,18 @@ class PPGAME_API APPCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UWidgetComponent> PlayerNameComp;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UPPCombatComponent> CombatComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
 	TObjectPtr<UInputMappingContext> CharacterIMC;
 	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
 	TObjectPtr<UInputAction> IA_Jump;
+	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	TObjectPtr<UInputAction> IA_Pickup;
 public:
 	APPCharacter();
 
@@ -46,10 +52,15 @@ protected:
 public:
 	/** 显示角色头顶Steam昵称 */
 	virtual void SetOverheadPlayerName();
+	
 	/** 设置新的可拾取武器 */
 	virtual void SetOverlapWeapon(APPWeapon* NewOverlapWeapon);
 	UFUNCTION()
 	virtual void OnRep_OverlapWeapon(APPWeapon* OldOverlapWeapon);
+
+protected:
+	/** 拾取操作 */
+	virtual void OnPickupInput();
 
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_OverlapWeapon)

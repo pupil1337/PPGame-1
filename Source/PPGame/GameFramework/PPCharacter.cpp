@@ -9,6 +9,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
+#include "PPGame/Component/PPCombatComponent.h"
 #include "PPGame/UMG/WidgetComponent/PPShowPlayerName.h"
 #include "PPGame/Weapon/PPWeapon.h"
 
@@ -20,21 +21,31 @@ APPCharacter::APPCharacter()
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
+	// PlayerNameComponent
 	PlayerNameComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("ShowPlayerName"));
 	PlayerNameComp->SetupAttachment(RootComponent);
 	PlayerNameComp->SetVisibility(false);
+
+	// CombatComponent
+	CombatComp = CreateDefaultSubobject<UPPCombatComponent>(TEXT("CombatComponent"));
+	CombatComp->SetIsReplicated(true);
 }
 
 void APPCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION(APPCharacter, OverlapWeapon, COND_OwnerOnly)
+	DOREPLIFETIME_CONDITION(APPCharacter, OverlapWeapon, COND_OwnerOnly);
 }
 
 void APPCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	if (CombatComp)
+	{
+		CombatComp->PPCharacter = this;
+	}
 }
 
 void APPCharacter::PossessedBy(AController* NewController)
@@ -61,6 +72,10 @@ void APPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 						if (IA_Jump)
 						{
 							EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &ThisClass::Jump);
+						}
+						if (IA_Pickup)
+						{
+							EnhancedInputComponent->BindAction(IA_Pickup, ETriggerEvent::Triggered, this, &ThisClass::OnPickupInput);
 						}
 					}
 				}
@@ -127,6 +142,14 @@ void APPCharacter::OnRep_OverlapWeapon(APPWeapon* OldOverlapWeapon)
 	if (OverlapWeapon)
 	{
 		OverlapWeapon->SetPickupTipVisibility(true);
+	}
+}
+
+void APPCharacter::OnPickupInput()
+{
+	if (HasAuthority() && CombatComp)
+	{
+		CombatComp->EquipWeapon(OverlapWeapon);
 	}
 }
 
