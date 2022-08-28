@@ -27,8 +27,6 @@ class PPGAME_API APPPlayerController : public APlayerController
 	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
 	TObjectPtr<UInputAction> IA_MoveRight;
 	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
-	TObjectPtr<UInputAction> IA_Jump;
-	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
 	TObjectPtr<UInputAction> IA_TurnRight;
 	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
 	TObjectPtr<UInputAction> IA_TurnUp;
@@ -45,7 +43,6 @@ protected:
 private:
 	virtual void OnMoveForward(const FInputActionValue& Value);
 	virtual void OnMoveRight(const FInputActionValue& Value);
-	virtual void OnMoveJump(const FInputActionValue& Value);
 	virtual void OnTurnRight(const FInputActionValue& Value);
 	virtual void OnTurnUp(const FInputActionValue& Value);
 	virtual void OnShowPlayerName(const FInputActionValue& Value);

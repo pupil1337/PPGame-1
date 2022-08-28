@@ -3,12 +3,14 @@
 
 #include "PPCharacter.h"
 
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerState.h"
 #include "Net/UnrealNetwork.h"
 #include "PPGame/UMG/WidgetComponent/PPShowPlayerName.h"
-#include "Weapon/PPWeapon.h"
+#include "PPGame/Weapon/PPWeapon.h"
 
 
 APPCharacter::APPCharacter()
@@ -43,6 +45,28 @@ void APPCharacter::PossessedBy(AController* NewController)
 void APPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
+	{
+		if (ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer())
+		{
+			if (UEnhancedInputLocalPlayerSubsystem* EnhancedInputLocalPlayerSubsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(LocalPlayer))
+			{
+				if (CharacterIMC)
+				{
+					EnhancedInputLocalPlayerSubsystem->AddMappingContext(CharacterIMC, 0);
+
+					if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+					{
+						if (IA_Jump)
+						{
+							EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &ThisClass::Jump);
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 void APPCharacter::BeginPlay()

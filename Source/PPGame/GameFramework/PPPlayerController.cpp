@@ -26,7 +26,7 @@ void APPPlayerController::SetupInputComponent()
 	{
 		if (BaseIMC)
 		{
-			EnhancedInputLocalPlayerSubsystem->AddMappingContext(BaseIMC, 0);
+			EnhancedInputLocalPlayerSubsystem->AddMappingContext(BaseIMC, 9);
 		}
 	}
 
@@ -39,10 +39,6 @@ void APPPlayerController::SetupInputComponent()
 		if (IA_MoveRight)
 		{
 			EnhancedInputComponent->BindAction(IA_MoveRight, ETriggerEvent::Triggered, this, &ThisClass::OnMoveRight);
-		}
-		if (IA_Jump)
-		{
-			EnhancedInputComponent->BindAction(IA_Jump, ETriggerEvent::Triggered, this, &ThisClass::OnMoveJump);
 		}
 		if (IA_TurnRight)
 		{
@@ -79,14 +75,6 @@ void APPPlayerController::OnMoveRight(const FInputActionValue& Value)
 	if (APPCharacter* PPCharacter = Cast<APPCharacter>(GetPawn()))
 	{
 		PPCharacter->AddMovementInput(FRotationMatrix({0.0f, GetControlRotation().Yaw, 0.0f}).GetUnitAxis(EAxis::Y), Value.GetMagnitude());
-	}
-}
-
-void APPPlayerController::OnMoveJump(const FInputActionValue& Value)
-{
-	if (APPCharacter* PPCharacter = Cast<APPCharacter>(GetPawn()))
-	{
-		PPCharacter->Jump();
 	}
 }
 

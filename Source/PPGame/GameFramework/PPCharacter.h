@@ -7,6 +7,8 @@
 #include "PPCharacter.generated.h"
 
 class UWidgetComponent;
+class UInputMappingContext;
+class UInputAction;
 class APPWeapon;
 
 UCLASS()
@@ -16,7 +18,11 @@ class PPGAME_API APPCharacter : public ACharacter
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<UWidgetComponent> PlayerNameComp;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	TObjectPtr<UInputMappingContext> CharacterIMC;
+	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	TObjectPtr<UInputAction> IA_Jump;
 public:
 	APPCharacter();
 
