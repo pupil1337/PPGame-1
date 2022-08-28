@@ -23,6 +23,7 @@ APPWeapon::APPWeapon()
 	AreaSphere = CreateDefaultSubobject<USphereComponent>(TEXT("AreaShpereComponent"));
 	AreaSphere->SetupAttachment(RootComponent);
 	AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 	AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// PickTipComponent
@@ -35,7 +36,7 @@ void APPWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
-	DOREPLIFETIME_CONDITION(APPWeapon, WeaponState, COND_SkipOwner)
+	DOREPLIFETIME_CONDITION(APPWeapon, WeaponState, COND_None)
 }
 
 void APPWeapon::BeginPlay()
@@ -44,8 +45,7 @@ void APPWeapon::BeginPlay()
 
 	if (HasAuthority())
 	{
-		AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+		AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		AreaSphere->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnComponentBeginOverlap);
 		AreaSphere->OnComponentEndOverlap.AddUniqueDynamic(this, &ThisClass::OnComponentEndOverlap);
 	}
@@ -58,7 +58,6 @@ void APPWeapon::SetWeaponState(EWeaponState State)
 	{
 	case EWeaponState::EWS_Equipped:
 		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-		AreaSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 		break;
 	case EWeaponState::EWS_Dropped:
 		break;
@@ -69,7 +68,7 @@ void APPWeapon::SetWeaponState(EWeaponState State)
 
 void APPWeapon::OnRep_WeaponState(EWeaponState OldWeaponState)
 {
-	
+	UE_LOG(LogTemp, Log, TEXT("WeaponState Replicated!"))
 }
 
 void APPWeapon::SetPickupTipVisibility(bool bVisibility)

@@ -17,6 +17,7 @@ class PPGAME_API UPPCombatComponent : public UActorComponent
 	
 public:
 	UPPCombatComponent();
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	virtual void EquipWeapon(APPWeapon* Weapon2Equip);
 
@@ -24,6 +25,9 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	UPROPERTY()
 	APPCharacter* PPCharacter;
+	
+	UPROPERTY(Replicated)
 	APPWeapon* EquippedWeapon;
 };

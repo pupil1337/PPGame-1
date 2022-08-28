@@ -6,10 +6,18 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "PPGame/GameFramework/PPCharacter.h"
 #include "PPGame/Weapon/PPWeapon.h"
+#include "Net/UnrealNetwork.h"
 
 UPPCombatComponent::UPPCombatComponent()
 {
 
+}
+
+void UPPCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME_CONDITION(UPPCombatComponent, EquippedWeapon, COND_None);
 }
 
 void UPPCombatComponent::EquipWeapon(APPWeapon* Weapon2Equip)

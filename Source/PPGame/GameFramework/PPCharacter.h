@@ -58,9 +58,15 @@ public:
 	UFUNCTION()
 	virtual void OnRep_OverlapWeapon(APPWeapon* OldOverlapWeapon);
 
+	/** 是否装备武器 */
+	virtual bool GetIsEquipWeapon();
+
 protected:
 	/** 拾取操作 */
 	virtual void OnPickupInput();
+	/** RPC 拾取武器 */
+	UFUNCTION(Server, Reliable)
+	virtual void ServerEquipWeapon();
 
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_OverlapWeapon)

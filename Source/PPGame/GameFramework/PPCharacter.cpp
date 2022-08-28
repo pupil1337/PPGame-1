@@ -147,9 +147,25 @@ void APPCharacter::OnRep_OverlapWeapon(APPWeapon* OldOverlapWeapon)
 
 void APPCharacter::OnPickupInput()
 {
-	if (HasAuthority() && CombatComp)
+	if (CombatComp)
 	{
-		CombatComp->EquipWeapon(OverlapWeapon);
+		if (HasAuthority())
+		{
+			CombatComp->EquipWeapon(OverlapWeapon);
+		}
+		else
+		{
+			ServerEquipWeapon();
+		}
 	}
 }
 
+void APPCharacter::ServerEquipWeapon_Implementation()
+{
+	OnPickupInput();
+}
+
+bool APPCharacter::GetIsEquipWeapon()
+{
+	return (CombatComp && CombatComp->EquippedWeapon);
+}

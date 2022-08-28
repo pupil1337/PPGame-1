@@ -40,4 +40,7 @@ void UPPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	// 3.bIsAccelerating
 	bIsAccelerating = PPCharacter->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.0f ? true : false;
+
+	// 4.bEquipWeapon
+	bEquipWeapon = PPCharacter->GetIsEquipWeapon();
 }
