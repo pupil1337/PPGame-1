@@ -36,21 +36,6 @@ void APPPlayerCameraManager::OnPossess(APPCharacter* NewCharacter)
 	{
 		ControlledCharacter = NewCharacter;
 
-		// Update references in the Camera Behavior AnimBP.
-		UPPCameraBehavior* CastedBehv = Cast<UPPCameraBehavior>(CameraBehavior->GetAnimInstance());
-		if (CastedBehv)
-		{
-			// todo
-			// NewCharacter->SetCameraBehavior(CastedBehv);
-			// CastedBehv->MovementState = NewCharacter->GetMovementState();
-			// CastedBehv->MovementAction = NewCharacter->GetMovementAction();
-			// CastedBehv->bRightShoulder = NewCharacter->IsRightShoulder();
-			// CastedBehv->Gait = NewCharacter->GetGait();
-			// CastedBehv->SetRotationMode(NewCharacter->GetRotationMode());
-			// CastedBehv->Stance = NewCharacter->GetStance();
-			// CastedBehv->ViewMode = NewCharacter->GetViewMode();
-		}
-
 		// Initial position
 		const FVector& TPSLoc = ControlledCharacter->GetActorTransform().GetLocation();
 		SetActorLocation(TPSLoc);
