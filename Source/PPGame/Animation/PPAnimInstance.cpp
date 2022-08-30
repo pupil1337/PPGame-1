@@ -43,4 +43,7 @@ void UPPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	// 4.bEquipWeapon
 	bEquipWeapon = PPCharacter->GetIsEquipWeapon();
+
+	// 5.bIsCrouched
+	bIsCrouched = PPCharacter->bIsCrouched;
 }

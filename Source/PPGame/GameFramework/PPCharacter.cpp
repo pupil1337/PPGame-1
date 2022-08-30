@@ -20,7 +20,9 @@ APPCharacter::APPCharacter()
 
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-
+	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
+	GetCharacterMovement()->SetCrouchedHalfHeight(60.0f);
+	
 	// PlayerNameComponent
 	PlayerNameComp = CreateDefaultSubobject<UWidgetComponent>(TEXT("ShowPlayerName"));
 	PlayerNameComp->SetupAttachment(RootComponent);
@@ -76,6 +78,14 @@ void APPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 						if (IA_Pickup)
 						{
 							EnhancedInputComponent->BindAction(IA_Pickup, ETriggerEvent::Triggered, this, &ThisClass::OnPickupInput);
+						}
+						if (IA_CrouchStart)
+						{
+							EnhancedInputComponent->BindAction(IA_CrouchStart, ETriggerEvent::Triggered, this, &ThisClass::OnCrouchStartInput);
+						}
+						if (IA_CrouchEnd)
+						{
+							EnhancedInputComponent->BindAction(IA_CrouchEnd, ETriggerEvent::Triggered, this, &ThisClass::OnCrouchEndInput);
 						}
 					}
 				}
@@ -158,6 +168,16 @@ void APPCharacter::OnPickupInput()
 			ServerEquipWeapon();
 		}
 	}
+}
+
+void APPCharacter::OnCrouchStartInput()
+{
+	Crouch();
+}
+
+void APPCharacter::OnCrouchEndInput()
+{
+	UnCrouch();
 }
 
 void APPCharacter::ServerEquipWeapon_Implementation()

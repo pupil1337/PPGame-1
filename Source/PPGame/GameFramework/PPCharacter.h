@@ -29,6 +29,10 @@ class PPGAME_API APPCharacter : public ACharacter
 	TObjectPtr<UInputAction> IA_Jump;
 	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
 	TObjectPtr<UInputAction> IA_Pickup;
+	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	TObjectPtr<UInputAction> IA_CrouchStart;
+	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	TObjectPtr<UInputAction> IA_CrouchEnd;
 public:
 	APPCharacter();
 
@@ -67,6 +71,10 @@ protected:
 	/** RPC 拾取武器 */
 	UFUNCTION(Server, Reliable)
 	virtual void ServerEquipWeapon();
+
+	/** 下蹲操作 */
+	virtual void OnCrouchStartInput();
+	virtual void OnCrouchEndInput();
 
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_OverlapWeapon)
