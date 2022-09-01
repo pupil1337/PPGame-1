@@ -87,6 +87,14 @@ void APPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 						{
 							EnhancedInputComponent->BindAction(IA_CrouchEnd, ETriggerEvent::Triggered, this, &ThisClass::OnCrouchEndInput);
 						}
+						if (IA_AimStart)
+						{
+							EnhancedInputComponent->BindAction(IA_AimStart, ETriggerEvent::Triggered, this, &ThisClass::OnAimStartInput);
+						}
+						if (IA_AimEnd)
+						{
+							EnhancedInputComponent->BindAction(IA_AimEnd, ETriggerEvent::Triggered, this, &ThisClass::OnAimEndInput);
+						}
 					}
 				}
 			}
@@ -159,14 +167,7 @@ void APPCharacter::OnPickupInput()
 {
 	if (CombatComp)
 	{
-		if (HasAuthority())
-		{
-			CombatComp->EquipWeapon(OverlapWeapon);
-		}
-		else
-		{
-			ServerEquipWeapon();
-		}
+		CombatComp->EquipWeapon(OverlapWeapon);
 	}
 }
 
@@ -180,12 +181,29 @@ void APPCharacter::OnCrouchEndInput()
 	UnCrouch();
 }
 
-void APPCharacter::ServerEquipWeapon_Implementation()
+void APPCharacter::OnAimStartInput()
 {
-	OnPickupInput();
+	if (CombatComp)
+	{
+		CombatComp->Aim(true);
+	}
 }
+
+void APPCharacter::OnAimEndInput()
+{
+	if (CombatComp)
+	{
+		CombatComp->Aim(false);
+	}
+}
+
 
 bool APPCharacter::GetIsEquipWeapon()
 {
 	return (CombatComp && CombatComp->EquippedWeapon);
+}
+
+bool APPCharacter::GetIsAiming()
+{
+	return (CombatComp && CombatComp->bAiming);
 }

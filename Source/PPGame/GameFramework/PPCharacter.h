@@ -33,6 +33,10 @@ class PPGAME_API APPCharacter : public ACharacter
 	TObjectPtr<UInputAction> IA_CrouchStart;
 	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
 	TObjectPtr<UInputAction> IA_CrouchEnd;
+	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	TObjectPtr<UInputAction> IA_AimStart;
+	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	TObjectPtr<UInputAction> IA_AimEnd;
 public:
 	APPCharacter();
 
@@ -64,17 +68,20 @@ public:
 
 	/** 是否装备武器 */
 	virtual bool GetIsEquipWeapon();
+	/** 是否在瞄准 */
+	virtual bool GetIsAiming();
 
 protected:
 	/** 拾取操作 */
 	virtual void OnPickupInput();
-	/** RPC 拾取武器 */
-	UFUNCTION(Server, Reliable)
-	virtual void ServerEquipWeapon();
 
 	/** 下蹲操作 */
 	virtual void OnCrouchStartInput();
 	virtual void OnCrouchEndInput();
+
+	/** 瞄准操作 */
+	virtual void OnAimStartInput();
+	virtual void OnAimEndInput();
 
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_OverlapWeapon)

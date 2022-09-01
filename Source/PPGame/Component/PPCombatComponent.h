@@ -19,7 +19,15 @@ public:
 	UPPCombatComponent();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
+	// 装备武器
 	virtual void EquipWeapon(APPWeapon* Weapon2Equip);
+	UFUNCTION(Server, Reliable)
+	virtual void ServerEquipWeapon(APPWeapon* Weapon2Equip);
+
+	// 瞄准
+	virtual void Aim(bool bAim);
+	UFUNCTION(Server, Reliable)
+	virtual void ServerAim(bool bAim);
 
 protected:
 	virtual void BeginPlay() override;
@@ -30,4 +38,7 @@ private:
 	
 	UPROPERTY(Replicated)
 	APPWeapon* EquippedWeapon;
+
+	UPROPERTY(Replicated)
+	bool bAiming;
 };

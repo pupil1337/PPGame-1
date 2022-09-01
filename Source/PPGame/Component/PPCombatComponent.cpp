@@ -10,7 +10,6 @@
 
 UPPCombatComponent::UPPCombatComponent()
 {
-
 }
 
 void UPPCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -18,25 +17,51 @@ void UPPCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME_CONDITION(UPPCombatComponent, EquippedWeapon, COND_None);
+	DOREPLIFETIME_CONDITION(UPPCombatComponent, bAiming, COND_SkipOwner);
+}
+
+void UPPCombatComponent::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void UPPCombatComponent::EquipWeapon(APPWeapon* Weapon2Equip)
 {
 	if (PPCharacter && Weapon2Equip)
 	{
-		EquippedWeapon = Weapon2Equip;
-		EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
-		if (const USkeletalMeshSocket* WeaponSocket = PPCharacter->GetMesh()->GetSocketByName(FName("RightHandSocket")))
+		if (PPCharacter->HasAuthority())
 		{
-			WeaponSocket->AttachActor(EquippedWeapon, PPCharacter->GetMesh());
+			EquippedWeapon = Weapon2Equip;
+			EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
+			if (const USkeletalMeshSocket* WeaponSocket = PPCharacter->GetMesh()->GetSocketByName(FName("RightHandSocket")))
+			{
+				WeaponSocket->AttachActor(EquippedWeapon, PPCharacter->GetMesh());
+			}
+			EquippedWeapon->SetOwner(PPCharacter);
 		}
-		EquippedWeapon->SetOwner(PPCharacter);
+		else
+		{
+			ServerEquipWeapon(Weapon2Equip);
+		}
 	}
 }
 
-void UPPCombatComponent::BeginPlay()
+void UPPCombatComponent::Aim(bool bAim)
 {
-	Super::BeginPlay();
-	
+	bAiming = bAim;
+	if (!PPCharacter->HasAuthority())
+	{
+		ServerAim(bAim);
+	}
+}
+
+void UPPCombatComponent::ServerAim_Implementation(bool bAim)
+{
+	Aim(bAim);
+}
+
+void UPPCombatComponent::ServerEquipWeapon_Implementation(APPWeapon* Weapon2Equip)
+{
+	EquipWeapon(Weapon2Equip);
 }
 

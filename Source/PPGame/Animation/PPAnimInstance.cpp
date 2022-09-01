@@ -46,4 +46,7 @@ void UPPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	// 5.bIsCrouched
 	bIsCrouched = PPCharacter->bIsCrouched;
+
+	// 6.bAiming
+	bAiming = PPCharacter->GetIsAiming();
 }
