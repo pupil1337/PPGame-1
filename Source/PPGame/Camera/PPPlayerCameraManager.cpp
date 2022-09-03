@@ -105,7 +105,7 @@ bool APPPlayerCameraManager::CustomCameraBehavior(float DeltaTime, FVector& Loca
 	}
 
 	// Step 1: Get Camera Parameters from CharacterBP via the Camera Interface
-	const FVector& PivotTargetLocation = ControlledCharacter->GetActorLocation() + FVector::UpVector*ControlledCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + FVector::UpVector*10.0f;
+	const FVector& PivotTargetLocation = ControlledCharacter->GetActorLocation() + FVector::UpVector*ControlledCharacter->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + FVector::UpVector*20.0f;
 	const FQuat& PivotTargetRotation = ControlledCharacter->GetActorQuat();
 	const FVector& FPTarget = ControlledCharacter->GetMesh()->GetSocketLocation(NAME_FP_Camera);
 

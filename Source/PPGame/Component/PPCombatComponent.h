@@ -21,24 +21,29 @@ public:
 
 	// 装备武器
 	virtual void EquipWeapon(APPWeapon* Weapon2Equip);
-	UFUNCTION(Server, Reliable)
-	virtual void ServerEquipWeapon(APPWeapon* Weapon2Equip);
-
 	// 瞄准
 	virtual void Aim(bool bAim);
-	UFUNCTION(Server, Reliable)
-	virtual void ServerAim(bool bAim);
 
 protected:
 	virtual void BeginPlay() override;
+
+	UFUNCTION()
+	virtual void OnRep_EquippedWeapon(APPWeapon* OldEquippedWeapon);
+	UFUNCTION()
+	virtual void OnRep_Aiming(bool OldbAiming);
+	
+	UFUNCTION(Server, Reliable)
+	virtual void ServerEquipWeapon(APPWeapon* Weapon2Equip);
+	UFUNCTION(Server, Reliable)
+	virtual void ServerAim(bool bAim);
 
 private:
 	UPROPERTY()
 	APPCharacter* PPCharacter;
 	
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing = OnRep_EquippedWeapon)
 	APPWeapon* EquippedWeapon;
 
-	UPROPERTY(Replicated)
+	UPROPERTY(ReplicatedUsing = OnRep_Aiming)
 	bool bAiming;
 };

@@ -4,6 +4,7 @@
 #include "PPAnimInstance.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "PPGame/GameFramework/PPCharacter.h"
 
 void UPPAnimInstance::NativeInitializeAnimation()
@@ -49,4 +50,19 @@ void UPPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	// 6.bAiming
 	bAiming = PPCharacter->GetIsAiming();
+
+	// 7.Yaw
+	FRotator AimRotation = PPCharacter->GetBaseAimRotation();
+	FRotator MovementRotation = UKismetMathLibrary::MakeRotFromX(PPCharacter->GetVelocity());
+	FRotator DeltaRot = UKismetMathLibrary::NormalizedDeltaRotator(MovementRotation, AimRotation);
+	DeltaRotation = FMath::RInterpTo(DeltaRotation, DeltaRot, DeltaSeconds, 6.0f);
+	Yaw = DeltaRotation.Yaw;
+	
+	// 8.Lean
+	CharacterRotationLastFrame = CharacterRotation;
+	CharacterRotation = PPCharacter->GetActorRotation();
+	const FRotator Delta = UKismetMathLibrary::NormalizedDeltaRotator(CharacterRotation, CharacterRotationLastFrame);
+	const float Target = Delta.Yaw / DeltaSeconds;
+	const float Interp = FMath::FInterpTo(Lean, Target, DeltaSeconds, 6.0f);
+	Lean = FMath::Clamp(Interp, -30.0f, 30.0f);
 }

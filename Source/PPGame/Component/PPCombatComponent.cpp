@@ -4,6 +4,7 @@
 #include "PPCombatComponent.h"
 
 #include "Engine/SkeletalMeshSocket.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "PPGame/GameFramework/PPCharacter.h"
 #include "PPGame/Weapon/PPWeapon.h"
 #include "Net/UnrealNetwork.h"
@@ -31,6 +32,7 @@ void UPPCombatComponent::EquipWeapon(APPWeapon* Weapon2Equip)
 	{
 		if (PPCharacter->HasAuthority())
 		{
+			APPWeapon* OldEquippedWeapon = EquippedWeapon;
 			EquippedWeapon = Weapon2Equip;
 			EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
 			if (const USkeletalMeshSocket* WeaponSocket = PPCharacter->GetMesh()->GetSocketByName(FName("RightHandSocket")))
@@ -38,6 +40,7 @@ void UPPCombatComponent::EquipWeapon(APPWeapon* Weapon2Equip)
 				WeaponSocket->AttachActor(EquippedWeapon, PPCharacter->GetMesh());
 			}
 			EquippedWeapon->SetOwner(PPCharacter);
+			OnRep_EquippedWeapon(OldEquippedWeapon);
 		}
 		else
 		{
@@ -48,11 +51,27 @@ void UPPCombatComponent::EquipWeapon(APPWeapon* Weapon2Equip)
 
 void UPPCombatComponent::Aim(bool bAim)
 {
+	bool OldbAiming = bAiming;
 	bAiming = bAim;
+	OnRep_Aiming(OldbAiming);
+	
 	if (!PPCharacter->HasAuthority())
 	{
 		ServerAim(bAim);
 	}
+}
+
+void UPPCombatComponent::OnRep_EquippedWeapon(APPWeapon* OldEquippedWeapon)
+{
+	if (PPCharacter->GetLocalRole() != ROLE_SimulatedProxy)
+	{
+		PPCharacter->bUseControllerRotationYaw = EquippedWeapon != nullptr;
+		PPCharacter->GetCharacterMovement()->bOrientRotationToMovement = EquippedWeapon == nullptr;
+	}
+}
+
+void UPPCombatComponent::OnRep_Aiming(bool OldbAiming)
+{
 }
 
 void UPPCombatComponent::ServerAim_Implementation(bool bAim)
