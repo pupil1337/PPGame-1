@@ -72,6 +72,7 @@ void UPPCombatComponent::OnRep_EquippedWeapon(APPWeapon* OldEquippedWeapon)
 
 void UPPCombatComponent::OnRep_Aiming(bool OldbAiming)
 {
+	PPCharacter->GetCharacterMovement()->MaxWalkSpeed = bAiming ? MaxAimWalkSpeed : MaxBaseWalkSpeed;
 }
 
 void UPPCombatComponent::ServerAim_Implementation(bool bAim)

@@ -12,6 +12,12 @@ class APPWeapon;
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PPGAME_API UPPCombatComponent : public UActorComponent
 {
+	UPROPERTY(EditDefaultsOnly)
+	float MaxBaseWalkSpeed = 600.0f;
+
+	UPROPERTY(EditDefaultsOnly)
+	float MaxAimWalkSpeed = 400.0f;
+	
 	GENERATED_BODY()
 	friend APPCharacter;
 	
