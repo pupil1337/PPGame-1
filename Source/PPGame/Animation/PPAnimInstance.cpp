@@ -65,4 +65,8 @@ void UPPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	const float Target = Delta.Yaw / DeltaSeconds;
 	const float Interp = FMath::FInterpTo(Lean, Target, DeltaSeconds, 6.0f);
 	Lean = FMath::Clamp(Interp, -30.0f, 30.0f);
+
+	// 9.AO_Yaw & AO_Pitch
+	AO_Yaw = PPCharacter->GetAO_Yaw();
+	AO_Pitch = PPCharacter->GetAO_Pitch();
 }

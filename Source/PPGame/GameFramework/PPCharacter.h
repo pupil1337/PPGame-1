@@ -57,6 +57,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void AimOffset(float DeltaTime);
+
 public:
 	/** 显示角色头顶Steam昵称 */
 	virtual void SetOverheadPlayerName();
@@ -70,6 +72,10 @@ public:
 	virtual bool GetIsEquipWeapon();
 	/** 是否在瞄准 */
 	virtual bool GetIsAiming();
+	/** 获取AO_Yaw*/
+	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
+	/** 获取AO_Pitch*/
+	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
 
 protected:
 	/** 拾取操作 */
@@ -88,4 +94,8 @@ private:
 	APPWeapon* OverlapWeapon;
 	
 	FTimerHandle ShowPlayerNameHandle;
+
+	float AO_Yaw;
+	float AO_Pitch;
+	FRotator StartAimRotation;
 };

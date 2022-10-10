@@ -12,6 +12,7 @@
 #include "PPGame/Component/PPCombatComponent.h"
 #include "PPGame/UMG/WidgetComponent/PPShowPlayerName.h"
 #include "PPGame/Weapon/PPWeapon.h"
+#include "kismet/KismetMathLibrary.h"
 
 
 APPCharacter::APPCharacter()
@@ -107,9 +108,42 @@ void APPCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
+void APPCharacter::AimOffset(float DeltaTime)
+{
+	if (CombatComp && CombatComp->EquippedWeapon != nullptr)
+	{
+		FVector Velocity = GetVelocity();
+		Velocity.Z = 0;
+		float Speed = Velocity.Size();
+		bool bIsInAir = GetMovementComponent()->IsFalling();
+		FRotator BaseAimRotation = GetBaseAimRotation();
+		
+		if (Speed == 0.0f && !bIsInAir) // 站立不动
+		{
+			bUseControllerRotationYaw = false;
+			FRotator CurrAimRotation = FRotator(0.0f, BaseAimRotation.Yaw, 0.0f);
+			FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrAimRotation, StartAimRotation);
+			AO_Yaw = DeltaAimRotation.Yaw;
+		}
+		else // 移动中
+		{
+			bUseControllerRotationYaw = true;
+			StartAimRotation = FRotator(0.0f, BaseAimRotation.Yaw, 0.0f);
+			AO_Yaw = 0.0f;
+		}
+
+		AO_Pitch = BaseAimRotation.Pitch;
+	}
+}
+
 void APPCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (GetLocalRole() != ROLE_SimulatedProxy)
+	{
+		AimOffset(DeltaTime);
+	}
 }
 
 void APPCharacter::OnRep_PlayerState()
