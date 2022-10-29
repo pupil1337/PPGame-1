@@ -44,6 +44,8 @@ private:
 	float AO_Yaw;
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
 	float AO_Pitch;
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	FTransform LeftHandTransform;
 	
 	FRotator CharacterRotationLastFrame;
 	FRotator CharacterRotation;

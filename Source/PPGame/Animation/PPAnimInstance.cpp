@@ -6,6 +6,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "PPGame/GameFramework/PPCharacter.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "PPGame/Weapon/PPWeapon.h"
 
 void UPPAnimInstance::NativeInitializeAnimation()
 {
@@ -69,4 +71,18 @@ void UPPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	// 9.AO_Yaw & AO_Pitch
 	AO_Yaw = PPCharacter->GetAO_Yaw();
 	AO_Pitch = PPCharacter->GetAO_Pitch();
+
+	// 10.LeftHandTransform
+	if (APPWeapon* PPWeapon = PPCharacter->GetEquippedWeapon())
+	{
+		if (USkeletalMeshComponent* WeaponMesh = PPWeapon->GetMesh())
+		{
+			LeftHandTransform = WeaponMesh->GetSocketTransform(FName("LeftHandSocket"), ERelativeTransformSpace::RTS_World);
+			FVector OutPosition;
+			FRotator OutRotation;
+			PPCharacter->GetMesh()->TransformToBoneSpace(FName("hand_r"), LeftHandTransform.GetLocation(), FRotator::ZeroRotator, OutPosition, OutRotation);
+			LeftHandTransform.SetLocation(OutPosition);
+			LeftHandTransform.SetRotation(FQuat(OutRotation));
+		}
+	}
 }

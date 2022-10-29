@@ -69,15 +69,15 @@ public:
 	void OnRep_OverlapWeapon(APPWeapon* OldOverlapWeapon);
 
 	/** 是否装备武器 */
-	bool GetIsEquipWeapon();
+	bool GetIsEquipWeapon() const;
 	/** 是否在瞄准 */
-	bool GetIsAiming();
+	bool GetIsAiming() const;
 	/** 获取AO_Yaw*/
 	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
 	/** 获取AO_Pitch*/
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
-	/** 获取当前武器Mesh */
-	USkeletalMeshComponent* GetWeaponMesh() const;
+	/** 获取当前武器 */
+	APPWeapon* GetEquippedWeapon() const;
 
 protected:
 	/** 拾取操作 */

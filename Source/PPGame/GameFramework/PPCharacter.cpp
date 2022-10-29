@@ -236,21 +236,21 @@ void APPCharacter::OnAimEndInput()
 }
 
 
-bool APPCharacter::GetIsEquipWeapon()
+bool APPCharacter::GetIsEquipWeapon() const
 {
 	return (CombatComp && CombatComp->EquippedWeapon);
 }
 
-bool APPCharacter::GetIsAiming()
+bool APPCharacter::GetIsAiming() const
 {
 	return (CombatComp && CombatComp->bAiming);
 }
 
-USkeletalMeshComponent* APPCharacter::GetWeaponMesh() const
+APPWeapon* APPCharacter::GetEquippedWeapon() const
 {
-	if (CombatComp && CombatComp->EquippedWeapon)
+	if (GetIsEquipWeapon())
 	{
-		return CombatComp->EquippedWeapon->GetMesh();
+		return CombatComp->EquippedWeapon;
 	}
 	return nullptr;
 }
