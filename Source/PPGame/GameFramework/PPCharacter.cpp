@@ -13,6 +13,7 @@
 #include "PPGame/UMG/WidgetComponent/PPShowPlayerName.h"
 #include "PPGame/Weapon/PPWeapon.h"
 #include "kismet/KismetMathLibrary.h"
+#include "Math/UnrealMathUtility.h"
 
 
 APPCharacter::APPCharacter()
@@ -133,17 +134,20 @@ void APPCharacter::AimOffset(float DeltaTime)
 		}
 
 		AO_Pitch = BaseAimRotation.Pitch;
+		if (!IsLocallyControlled() && AO_Pitch > 90.0f)
+		{
+			FVector2D InRange = {270.0f, 360.0f};
+			FVector2D OutRange = {-90.0f, 0.0f};
+			AO_Pitch = FMath::GetMappedRangeValueClamped(InRange, OutRange, AO_Pitch);
+		}
 	}
 }
 
 void APPCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (GetLocalRole() != ROLE_SimulatedProxy)
-	{
-		AimOffset(DeltaTime);
-	}
+	
+	AimOffset(DeltaTime);
 }
 
 void APPCharacter::OnRep_PlayerState()
