@@ -24,7 +24,7 @@ protected:
 	virtual void OnPostLogin(AController* NewPlayer) override;
 
 private:
-	virtual void OnStartSession(bool bWasSuccessful);
+	void OnStartSession(bool bWasSuccessful);
 	
 	UPROPERTY()
 	UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem;

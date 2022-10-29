@@ -57,37 +57,39 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	virtual void AimOffset(float DeltaTime);
+	void AimOffset(float DeltaTime);
 
 public:
 	/** 显示角色头顶Steam昵称 */
-	virtual void SetOverheadPlayerName();
+	void SetOverheadPlayerName();
 	
 	/** 设置新的可拾取武器 */
-	virtual void SetOverlapWeapon(APPWeapon* NewOverlapWeapon);
+	void SetOverlapWeapon(APPWeapon* NewOverlapWeapon);
 	UFUNCTION()
-	virtual void OnRep_OverlapWeapon(APPWeapon* OldOverlapWeapon);
+	void OnRep_OverlapWeapon(APPWeapon* OldOverlapWeapon);
 
 	/** 是否装备武器 */
-	virtual bool GetIsEquipWeapon();
+	bool GetIsEquipWeapon();
 	/** 是否在瞄准 */
-	virtual bool GetIsAiming();
+	bool GetIsAiming();
 	/** 获取AO_Yaw*/
 	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
 	/** 获取AO_Pitch*/
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
+	/** 获取当前武器Mesh */
+	USkeletalMeshComponent* GetWeaponMesh() const;
 
 protected:
 	/** 拾取操作 */
-	virtual void OnPickupInput();
+	void OnPickupInput();
 
 	/** 下蹲操作 */
-	virtual void OnCrouchStartInput();
-	virtual void OnCrouchEndInput();
+	void OnCrouchStartInput();
+	void OnCrouchEndInput();
 
 	/** 瞄准操作 */
-	virtual void OnAimStartInput();
-	virtual void OnAimEndInput();
+	void OnAimStartInput();
+	void OnAimEndInput();
 
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_OverlapWeapon)

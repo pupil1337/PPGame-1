@@ -245,3 +245,13 @@ bool APPCharacter::GetIsAiming()
 {
 	return (CombatComp && CombatComp->bAiming);
 }
+
+USkeletalMeshComponent* APPCharacter::GetWeaponMesh() const
+{
+	if (CombatComp && CombatComp->EquippedWeapon)
+	{
+		return CombatComp->EquippedWeapon->GetMesh();
+	}
+	return nullptr;
+}
+

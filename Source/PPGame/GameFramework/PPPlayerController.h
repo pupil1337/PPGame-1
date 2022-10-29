@@ -41,11 +41,11 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
 private:
-	virtual void OnMoveForward(const FInputActionValue& Value);
-	virtual void OnMoveRight(const FInputActionValue& Value);
-	virtual void OnTurnRight(const FInputActionValue& Value);
-	virtual void OnTurnUp(const FInputActionValue& Value);
-	virtual void OnShowPlayerName(const FInputActionValue& Value);
+	void OnMoveForward(const FInputActionValue& Value);
+	void OnMoveRight(const FInputActionValue& Value);
+	void OnTurnRight(const FInputActionValue& Value);
+	void OnTurnUp(const FInputActionValue& Value);
+	void OnShowPlayerName(const FInputActionValue& Value);
 
-	virtual void SetUpCamera(APawn* InPawn);
+	void SetUpCamera(APawn* InPawn);
 };

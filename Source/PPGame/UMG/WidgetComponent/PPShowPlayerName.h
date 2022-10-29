@@ -20,7 +20,7 @@ class PPGAME_API UPPShowPlayerName : public UUserWidget
 	UTextBlock* TextBlock_PlayerName;
 
 public:
-	virtual void SetPlayerName(const FString& InString);
+	void SetPlayerName(const FString& InString);
 	
 protected:
 	virtual void OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) override;

@@ -26,22 +26,22 @@ public:
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 	// 装备武器
-	virtual void EquipWeapon(APPWeapon* Weapon2Equip);
+	void EquipWeapon(APPWeapon* Weapon2Equip);
 	// 瞄准
-	virtual void Aim(bool bAim);
+	void Aim(bool bAim);
 
 protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	virtual void OnRep_EquippedWeapon(APPWeapon* OldEquippedWeapon);
+	void OnRep_EquippedWeapon(APPWeapon* OldEquippedWeapon);
 	UFUNCTION()
-	virtual void OnRep_Aiming(bool OldbAiming);
+	void OnRep_Aiming(bool OldbAiming);
 	
 	UFUNCTION(Server, Reliable)
-	virtual void ServerEquipWeapon(APPWeapon* Weapon2Equip);
+	void ServerEquipWeapon(APPWeapon* Weapon2Equip);
 	UFUNCTION(Server, Reliable)
-	virtual void ServerAim(bool bAim);
+	void ServerAim(bool bAim);
 
 private:
 	UPROPERTY()
