@@ -85,4 +85,7 @@ void UPPAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 			LeftHandTransform.SetRotation(FQuat(OutRotation));
 		}
 	}
+
+	// 11.TurningInPlaceType
+	TurningInPlaceType = PPCharacter->GetTurningInPlaceType();
 }

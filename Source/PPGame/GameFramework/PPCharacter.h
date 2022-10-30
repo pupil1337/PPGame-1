@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "PPGame/PPGameTypes/TurningInPlace.h"
 #include "PPCharacter.generated.h"
 
 class UWidgetComponent;
@@ -78,6 +79,8 @@ public:
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
 	/** 获取当前武器 */
 	APPWeapon* GetEquippedWeapon() const;
+	/** 获取当前TurningInPlaceType */
+	FORCEINLINE ETurningInPlace GetTurningInPlaceType() const { return TurningInPlaceType; }
 
 protected:
 	/** 拾取操作 */
@@ -100,4 +103,6 @@ private:
 	float AO_Yaw;
 	float AO_Pitch;
 	FRotator StartAimRotation;
+	ETurningInPlace TurningInPlaceType = ETurningInPlace::ETIP_TurnNone;
+	float InterpAO_Yaw;
 };

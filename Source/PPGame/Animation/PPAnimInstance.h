@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "PPGame/PPGameTypes/TurningInPlace.h"
 #include "PPAnimInstance.generated.h"
 
 class APPCharacter;
@@ -46,6 +47,8 @@ private:
 	float AO_Pitch;
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
 	FTransform LeftHandTransform;
+	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))
+	ETurningInPlace TurningInPlaceType;
 	
 	FRotator CharacterRotationLastFrame;
 	FRotator CharacterRotation;

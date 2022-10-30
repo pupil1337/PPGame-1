@@ -118,21 +118,46 @@ void APPCharacter::AimOffset(float DeltaTime)
 		float Speed = Velocity.Size();
 		bool bIsInAir = GetMovementComponent()->IsFalling();
 		FRotator BaseAimRotation = GetBaseAimRotation();
-		
+
+		// 1.AO_Yaw
 		if (Speed == 0.0f && !bIsInAir) // 站立不动
 		{
-			bUseControllerRotationYaw = false;
 			FRotator CurrAimRotation = FRotator(0.0f, BaseAimRotation.Yaw, 0.0f);
 			FRotator DeltaAimRotation = UKismetMathLibrary::NormalizedDeltaRotator(CurrAimRotation, StartAimRotation);
 			AO_Yaw = DeltaAimRotation.Yaw;
+
+			if (AO_Yaw < -70.0f)
+			{
+				TurningInPlaceType = ETurningInPlace::ETIP_TurnLeft;
+			}
+			else if (AO_Yaw > 70.0f)
+			{
+				TurningInPlaceType = ETurningInPlace::ETIP_TurnRight;
+			}
+			
+			if (TurningInPlaceType != ETurningInPlace::ETIP_TurnNone)
+			{
+				AO_Yaw = InterpAO_Yaw = FMath::FInterpTo(InterpAO_Yaw, 0.0f, DeltaTime, 4.0f);
+				if (FMath::Abs(AO_Yaw) < 10.0f)
+				{
+					StartAimRotation = FRotator(0.0f, BaseAimRotation.Yaw, 0.0f);
+					AO_Yaw = 0.0f;
+					TurningInPlaceType = ETurningInPlace::ETIP_TurnNone;
+				}
+			}
+			else
+			{
+				InterpAO_Yaw = AO_Yaw;
+			}
 		}
 		else // 移动中
 		{
-			bUseControllerRotationYaw = true;
 			StartAimRotation = FRotator(0.0f, BaseAimRotation.Yaw, 0.0f);
 			AO_Yaw = 0.0f;
+			TurningInPlaceType = ETurningInPlace::ETIP_TurnNone;
 		}
 
+		// 2.AO_Pitch
 		AO_Pitch = BaseAimRotation.Pitch;
 		if (!IsLocallyControlled() && AO_Pitch > 90.0f)
 		{
