@@ -19,7 +19,9 @@
 APPCharacter::APPCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
+	NetUpdateFrequency = 66.0f;
+	MinNetUpdateFrequency = 33.0f;
+	
 	bUseControllerRotationYaw = false;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->GetNavAgentPropertiesRef().bCanCrouch = true;
@@ -182,9 +184,9 @@ void APPCharacter::OnRep_PlayerState()
 
 void APPCharacter::Destroyed()
 {
-	Super::Destroyed();
-
 	GetWorldTimerManager().ClearTimer(ShowPlayerNameHandle);
+
+	Super::Destroyed();
 }
 
 void APPCharacter::SetOverheadPlayerName()
