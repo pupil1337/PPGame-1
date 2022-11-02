@@ -99,6 +99,14 @@ void APPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 						{
 							EnhancedInputComponent->BindAction(IA_AimEnd, ETriggerEvent::Triggered, this, &ThisClass::OnAimEndInput);
 						}
+						if (IA_FireStart)
+						{
+							EnhancedInputComponent->BindAction(IA_FireStart, ETriggerEvent::Triggered, this, &ThisClass::OnFireStartInput);
+						}
+						if (IA_FireEnd)
+						{
+							EnhancedInputComponent->BindAction(IA_FireEnd, ETriggerEvent::Triggered, this, &ThisClass::OnFireEndInput);
+						}
 					}
 				}
 			}
@@ -228,6 +236,21 @@ void APPCharacter::OnRep_OverlapWeapon(APPWeapon* OldOverlapWeapon)
 	}
 }
 
+void APPCharacter::PlayFireMontage(bool bAiming)
+{
+	if (FireWeaponMontage)
+	{
+		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+		{
+			AnimInstance->Montage_Play(FireWeaponMontage);
+			FName FireSectionName = bAiming ? FName("RifleAim") : FName("RifleHip");
+			AnimInstance->Montage_JumpToSection(FireSectionName);
+		}
+	}
+}
+
+/** Input ================================================================================= */
+
 void APPCharacter::OnPickupInput()
 {
 	if (CombatComp)
@@ -262,6 +285,23 @@ void APPCharacter::OnAimEndInput()
 	}
 }
 
+void APPCharacter::OnFireStartInput()
+{
+	if (CombatComp)
+	{
+		CombatComp->Fire(true);
+	}
+}
+
+void APPCharacter::OnFireEndInput()
+{
+	if (CombatComp)
+	{
+		CombatComp->Fire(false);
+	}
+}
+
+/** Getter ================================================================================= */
 
 bool APPCharacter::GetIsEquipWeapon() const
 {

@@ -12,32 +12,41 @@ class UPPCombatComponent;
 class UInputMappingContext;
 class UInputAction;
 class APPWeapon;
+class UAnimMontage;
 
 UCLASS()
 class PPGAME_API APPCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<UWidgetComponent> PlayerNameComp;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UPPCombatComponent> CombatComp;
 
-	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	UPROPERTY(EditAnywhere, Category = Combat)
+	TObjectPtr<UAnimMontage> FireWeaponMontage;
+	
+	UPROPERTY(EditAnywhere, Category = EnhancedInput)
 	TObjectPtr<UInputMappingContext> CharacterIMC;
-	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	UPROPERTY(EditAnywhere, Category = EnhancedInput)
 	TObjectPtr<UInputAction> IA_Jump;
-	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	UPROPERTY(EditAnywhere, Category = EnhancedInput)
 	TObjectPtr<UInputAction> IA_Pickup;
-	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	UPROPERTY(EditAnywhere, Category = EnhancedInput)
 	TObjectPtr<UInputAction> IA_CrouchStart;
-	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	UPROPERTY(EditAnywhere, Category = EnhancedInput)
 	TObjectPtr<UInputAction> IA_CrouchEnd;
-	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	UPROPERTY(EditAnywhere, Category = EnhancedInput)
 	TObjectPtr<UInputAction> IA_AimStart;
-	UPROPERTY(EditDefaultsOnly, Category = EnhancedInput)
+	UPROPERTY(EditAnywhere, Category = EnhancedInput)
 	TObjectPtr<UInputAction> IA_AimEnd;
+	UPROPERTY(EditAnywhere, Category = EnhancedInput)
+	TObjectPtr<UInputAction> IA_FireStart;
+	UPROPERTY(EditAnywhere, Category = EnhancedInput)
+	TObjectPtr<UInputAction> IA_FireEnd;
+	
 public:
 	APPCharacter();
 
@@ -69,6 +78,9 @@ public:
 	UFUNCTION()
 	void OnRep_OverlapWeapon(APPWeapon* OldOverlapWeapon);
 
+	/** 播放开火动画 */
+	void PlayFireMontage(bool bAiming);
+
 	/** 是否装备武器 */
 	bool GetIsEquipWeapon() const;
 	/** 是否在瞄准 */
@@ -93,6 +105,10 @@ protected:
 	/** 瞄准操作 */
 	void OnAimStartInput();
 	void OnAimEndInput();
+
+	/** 开火操作 */
+	void OnFireStartInput();
+	void OnFireEndInput();
 
 private:
 	UPROPERTY(ReplicatedUsing = OnRep_OverlapWeapon)

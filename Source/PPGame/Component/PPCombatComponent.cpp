@@ -19,6 +19,7 @@ void UPPCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 	DOREPLIFETIME_CONDITION(UPPCombatComponent, EquippedWeapon, COND_None);
 	DOREPLIFETIME_CONDITION(UPPCombatComponent, bAiming, COND_SkipOwner);
+	DOREPLIFETIME_CONDITION(UPPCombatComponent, bFiring, COND_SkipOwner);
 }
 
 void UPPCombatComponent::BeginPlay()
@@ -61,6 +62,18 @@ void UPPCombatComponent::Aim(bool bAim)
 	}
 }
 
+void UPPCombatComponent::Fire(bool bFire)
+{
+	bool OldFiring = bFiring;
+	bFiring = bFire;
+	OnRep_Firing(OldFiring);
+
+	if (!PPCharacter->HasAuthority())
+	{
+		ServerFire(bFire);
+	}
+}
+
 void UPPCombatComponent::OnRep_EquippedWeapon(APPWeapon* OldEquippedWeapon)
 {
 	if (PPCharacter->GetLocalRole() != ROLE_SimulatedProxy)
@@ -75,9 +88,22 @@ void UPPCombatComponent::OnRep_Aiming(bool OldbAiming)
 	PPCharacter->GetCharacterMovement()->MaxWalkSpeed = bAiming ? MaxAimWalkSpeed : MaxBaseWalkSpeed;
 }
 
+void UPPCombatComponent::OnRep_Firing(bool OldFiring)
+{
+	if (EquippedWeapon && bFiring)
+	{
+		PPCharacter->PlayFireMontage(bFiring);
+	}
+}
+
 void UPPCombatComponent::ServerAim_Implementation(bool bAim)
 {
 	Aim(bAim);
+}
+
+void UPPCombatComponent::ServerFire_Implementation(bool bFire)
+{
+	Fire(bFire);
 }
 
 void UPPCombatComponent::ServerEquipWeapon_Implementation(APPWeapon* Weapon2Equip)
