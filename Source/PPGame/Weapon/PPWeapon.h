@@ -19,6 +19,7 @@ enum class EWeaponState: uint8
 class USphereComponent;
 class UWidgetComponent;
 class APPCharacter;
+class UAnimationAsset;
 
 UCLASS()
 class PPGAME_API APPWeapon : public AActor
@@ -33,6 +34,9 @@ class PPGAME_API APPWeapon : public AActor
 
 	UPROPERTY(VisibleDefaultsOnly)
 	TObjectPtr<UWidgetComponent> PickTipComponent;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UAnimationAsset> FireAnim;
 	
 public:
 	APPWeapon();
@@ -46,6 +50,8 @@ protected:
 
 public:
 	void SetPickupTipVisibility(bool bVisibility);
+
+	void Fire();
 
 	FORCEINLINE USkeletalMeshComponent* GetMesh() const { return WeaponMesh; }
 

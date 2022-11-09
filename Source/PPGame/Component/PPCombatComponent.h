@@ -26,29 +26,30 @@ public:
 	UPPCombatComponent();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
-	/** 装备武器 */
-	void EquipWeapon(APPWeapon* Weapon2Equip);
-	/** 瞄准 */
-	void Aim(bool bAim);
-	/** 开火 */
-	void Fire(bool bFire);
-
 protected:
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	void OnRep_EquippedWeapon(APPWeapon* OldEquippedWeapon);
-	UFUNCTION()
-	void OnRep_Aiming(bool OldbAiming);
-	UFUNCTION()
-	void OnRep_Firing(bool OldFiring);
-	
+	/** 装备武器 */
+	void EquipWeapon(APPWeapon* Weapon2Equip);
 	UFUNCTION(Server, Reliable)
 	void ServerEquipWeapon(APPWeapon* Weapon2Equip);
+	UFUNCTION()
+	void OnRep_EquippedWeapon(APPWeapon* OldEquippedWeapon);
+
+	/** 瞄准 */
+	void Aim(bool bAim);
 	UFUNCTION(Server, Reliable)
 	void ServerAim(bool bAim);
+	UFUNCTION()
+	void OnRep_Aiming(bool OldbAiming);
+	
+	/** 开火 */
+	void Fire(bool bFire);
+	void OnFire(bool bFire);
 	UFUNCTION(Server, Reliable)
 	void ServerFire(bool bFire);
+	UFUNCTION(NetMulticast, Unreliable)
+	void MulticastFire(bool bFire);
 
 private:
 	UPROPERTY()
@@ -59,6 +60,4 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_Aiming)
 	bool bAiming;
-	UPROPERTY(ReplicatedUsing = OnRep_Firing)
-	bool bFiring;
 };

@@ -19,7 +19,6 @@ void UPPCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 
 	DOREPLIFETIME_CONDITION(UPPCombatComponent, EquippedWeapon, COND_None);
 	DOREPLIFETIME_CONDITION(UPPCombatComponent, bAiming, COND_SkipOwner);
-	DOREPLIFETIME_CONDITION(UPPCombatComponent, bFiring, COND_SkipOwner);
 }
 
 void UPPCombatComponent::BeginPlay()
@@ -50,6 +49,20 @@ void UPPCombatComponent::EquipWeapon(APPWeapon* Weapon2Equip)
 	}
 }
 
+void UPPCombatComponent::ServerEquipWeapon_Implementation(APPWeapon* Weapon2Equip)
+{
+	EquipWeapon(Weapon2Equip);
+}
+
+void UPPCombatComponent::OnRep_EquippedWeapon(APPWeapon* OldEquippedWeapon)
+{
+	if (PPCharacter->GetLocalRole() != ROLE_SimulatedProxy)
+	{
+		PPCharacter->bUseControllerRotationYaw = EquippedWeapon != nullptr;
+		PPCharacter->GetCharacterMovement()->bOrientRotationToMovement = EquippedWeapon == nullptr;
+	}
+}
+
 void UPPCombatComponent::Aim(bool bAim)
 {
 	bool OldbAiming = bAiming;
@@ -62,25 +75,9 @@ void UPPCombatComponent::Aim(bool bAim)
 	}
 }
 
-void UPPCombatComponent::Fire(bool bFire)
+void UPPCombatComponent::ServerAim_Implementation(bool bAim)
 {
-	bool OldFiring = bFiring;
-	bFiring = bFire;
-	OnRep_Firing(OldFiring);
-
-	if (!PPCharacter->HasAuthority())
-	{
-		ServerFire(bFire);
-	}
-}
-
-void UPPCombatComponent::OnRep_EquippedWeapon(APPWeapon* OldEquippedWeapon)
-{
-	if (PPCharacter->GetLocalRole() != ROLE_SimulatedProxy)
-	{
-		PPCharacter->bUseControllerRotationYaw = EquippedWeapon != nullptr;
-		PPCharacter->GetCharacterMovement()->bOrientRotationToMovement = EquippedWeapon == nullptr;
-	}
+	Aim(bAim);
 }
 
 void UPPCombatComponent::OnRep_Aiming(bool OldbAiming)
@@ -88,26 +85,37 @@ void UPPCombatComponent::OnRep_Aiming(bool OldbAiming)
 	PPCharacter->GetCharacterMovement()->MaxWalkSpeed = bAiming ? MaxAimWalkSpeed : MaxBaseWalkSpeed;
 }
 
-void UPPCombatComponent::OnRep_Firing(bool OldFiring)
+void UPPCombatComponent::Fire(bool bFire)
 {
-	if (EquippedWeapon && bFiring)
+	if (GetOwnerRole() == ROLE_AutonomousProxy)
 	{
-		PPCharacter->PlayFireMontage(bFiring);
+		OnFire(bFire);
 	}
+	ServerFire(bFire);
 }
 
-void UPPCombatComponent::ServerAim_Implementation(bool bAim)
+void UPPCombatComponent::OnFire(bool bFire)
 {
-	Aim(bAim);
+	if (PPCharacter && EquippedWeapon)
+	{
+		if (bFire)
+		{
+			PPCharacter->PlayFireMontage(bAiming);
+			EquippedWeapon->Fire();
+		}
+	}
 }
 
 void UPPCombatComponent::ServerFire_Implementation(bool bFire)
 {
-	Fire(bFire);
+	MulticastFire(bFire);
 }
 
-void UPPCombatComponent::ServerEquipWeapon_Implementation(APPWeapon* Weapon2Equip)
+void UPPCombatComponent::MulticastFire_Implementation(bool bFire)
 {
-	EquipWeapon(Weapon2Equip);
+	if (GetOwnerRole() != ROLE_AutonomousProxy)
+	{
+		OnFire(bFire);
+	}
 }
 

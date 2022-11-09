@@ -7,6 +7,7 @@
 #include "Components/WidgetComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "PPGame/GameFramework/PPCharacter.h"
+#include "Components/SkeletalMeshComponent.h"
 
 APPWeapon::APPWeapon()
 {
@@ -76,8 +77,13 @@ void APPWeapon::SetPickupTipVisibility(bool bVisibility)
 	PickTipComponent->SetVisibility(bVisibility);
 }
 
+void APPWeapon::Fire()
+{
+	WeaponMesh->PlayAnimation(FireAnim, false);
+}
+
 void APPWeapon::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                        UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (APPCharacter* PPCharacter = Cast<APPCharacter>(OtherActor))
 	{
