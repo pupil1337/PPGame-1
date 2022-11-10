@@ -40,18 +40,17 @@ class PPGAME_API APPWeapon : public AActor
 	
 public:
 	APPWeapon();
-
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
-	void SetWeaponState(EWeaponState State);
 
 protected:
 	virtual void BeginPlay() override;
 
 public:
+	void SetWeaponState(EWeaponState State);
+	
 	void SetPickupTipVisibility(bool bVisibility);
 
-	void Fire();
+	virtual void Fire(const FVector& HitTarget);
 
 	FORCEINLINE USkeletalMeshComponent* GetMesh() const { return WeaponMesh; }
 

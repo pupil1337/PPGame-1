@@ -77,9 +77,12 @@ void APPWeapon::SetPickupTipVisibility(bool bVisibility)
 	PickTipComponent->SetVisibility(bVisibility);
 }
 
-void APPWeapon::Fire()
+void APPWeapon::Fire(const FVector& HitTarget)
 {
-	WeaponMesh->PlayAnimation(FireAnim, false);
+	if (FireAnim)
+	{
+		WeaponMesh->PlayAnimation(FireAnim, false);	
+	}
 }
 
 void APPWeapon::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

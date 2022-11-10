@@ -8,9 +8,11 @@
 #include "PPGame/GameFramework/PPCharacter.h"
 #include "PPGame/Weapon/PPWeapon.h"
 #include "Net/UnrealNetwork.h"
+#include "Kismet/GameplayStatics.h"
 
 UPPCombatComponent::UPPCombatComponent()
 {
+	PrimaryComponentTick.bCanEverTick = true;
 }
 
 void UPPCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -24,6 +26,14 @@ void UPPCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 void UPPCombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+void UPPCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	FHitResult HitResult;
+	TraceUnderCrosshairs(HitResult);
 }
 
 void UPPCombatComponent::EquipWeapon(APPWeapon* Weapon2Equip)
@@ -101,7 +111,7 @@ void UPPCombatComponent::OnFire(bool bFire)
 		if (bFire)
 		{
 			PPCharacter->PlayFireMontage(bAiming);
-			EquippedWeapon->Fire();
+			EquippedWeapon->Fire(HitTarget);
 		}
 	}
 }
@@ -116,6 +126,44 @@ void UPPCombatComponent::MulticastFire_Implementation(bool bFire)
 	if (GetOwnerRole() != ROLE_AutonomousProxy)
 	{
 		OnFire(bFire);
+	}
+}
+
+void UPPCombatComponent::TraceUnderCrosshairs(FHitResult& HitResult)
+{
+	FVector2D ViewportSize;
+	if (GEngine && GEngine->GameViewport)
+	{
+		GEngine->GameViewport->GetViewportSize(ViewportSize);
+	}
+
+	FVector WorldPosition, WorldDirection;
+	bool ScreenToWorld = UGameplayStatics::DeprojectScreenToWorld(
+		UGameplayStatics::GetPlayerController(this, 0),
+		ViewportSize / 2.0f,
+		WorldPosition,
+		WorldDirection
+	);
+	if (ScreenToWorld)
+	{
+		FVector Start = WorldPosition;
+		FVector End = Start + WorldDirection*10000.0f;
+
+		FCollisionQueryParams QueryParams;
+		QueryParams.AddIgnoredActor(this->GetOwner());
+		GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			Start,
+			End,
+			ECollisionChannel::ECC_Visibility,
+			QueryParams
+		);
+		if (!HitResult.bBlockingHit)
+		{
+			HitResult.ImpactPoint = End;
+		}
+		HitTarget = HitResult.ImpactPoint;
+		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 10, FColor::Red);
 	}
 }
 

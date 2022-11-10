@@ -6,6 +6,8 @@
 #include "PPWeapon.h"
 #include "PPProjectileWeapon.generated.h"
 
+class APPProjectile;
+
 /**
  * 
  */
@@ -14,6 +16,12 @@ class PPGAME_API APPProjectileWeapon : public APPWeapon
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<APPProjectile> ProjectileClass;
+	
 public:
 	APPProjectileWeapon();
+
+public:
+	virtual void Fire(const FVector& HitTarget) override;
 };

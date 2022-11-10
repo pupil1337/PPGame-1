@@ -25,10 +25,11 @@ class PPGAME_API UPPCombatComponent : public UActorComponent
 public:
 	UPPCombatComponent();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void BeginPlay() override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
-	virtual void BeginPlay() override;
-
+	
 	/** 装备武器 */
 	void EquipWeapon(APPWeapon* Weapon2Equip);
 	UFUNCTION(Server, Reliable)
@@ -51,6 +52,8 @@ protected:
 	UFUNCTION(NetMulticast, Unreliable)
 	void MulticastFire(bool bFire);
 
+	void TraceUnderCrosshairs(FHitResult& HitResult);
+
 private:
 	UPROPERTY()
 	APPCharacter* PPCharacter;
@@ -60,4 +63,8 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_Aiming)
 	bool bAiming;
+
+	UPROPERTY()
+	FVector HitTarget;
 };
+
