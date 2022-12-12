@@ -6,10 +6,10 @@
 #include "Components/TextBlock.h"
 #include "GameFramework/PlayerState.h"
 
-void UPPShowPlayerName::OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld)
+void UPPShowPlayerName::NativeDestruct()
 {
 	RemoveFromParent();
-	Super::OnLevelRemovedFromWorld(InLevel, InWorld);
+	Super::NativeDestruct();
 }
 
 void UPPShowPlayerName::SetPlayerName(const FString& InString)

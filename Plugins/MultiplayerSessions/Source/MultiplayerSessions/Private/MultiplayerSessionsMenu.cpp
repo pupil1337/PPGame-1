@@ -19,10 +19,10 @@ bool UMultiplayerSessionsMenu::Initialize()
 	return false;
 }
 
-void UMultiplayerSessionsMenu::OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld)
+void UMultiplayerSessionsMenu::NativeDestruct()
 {
 	TearDownMenu();
-	Super::OnLevelRemovedFromWorld(InLevel, InWorld);
+	Super::NativeDestruct();
 }
 
 void UMultiplayerSessionsMenu::BindButton()
