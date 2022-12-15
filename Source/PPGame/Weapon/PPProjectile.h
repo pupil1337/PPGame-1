@@ -8,6 +8,8 @@
 
 class UBoxComponent;
 class UProjectileMovementComponent;
+class UParticleSystem;
+class USoundCue;
 
 UCLASS()
 class PPGAME_API APPProjectile : public AActor
@@ -19,12 +21,20 @@ class PPGAME_API APPProjectile : public AActor
 
 	UPROPERTY(VisibleDefaultsOnly, DisplayName = "Projectile移动组件")
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovementComponent;
-	
+
+	UPROPERTY(EditDefaultsOnly, DisplayName = "Trace特效")
+	TObjectPtr<UParticleSystem> TracePS;
+
+	UPROPERTY(EditDefaultsOnly, DisplayName = "Impact特效")
+	TObjectPtr<UParticleSystem> ImpactPS;
+
+	UPROPERTY(EditDefaultsOnly, DisplayName = "Impace音效")
+	TObjectPtr<USoundCue> ImpactSC;
 public:
 	APPProjectile();
-	virtual void Tick(float DeltaTime) override;
 
 protected:
 	virtual void BeginPlay() override;
-
+	UFUNCTION()
+	void OnProjectileStop(const FHitResult& ImpactResult);
 };

@@ -4,11 +4,11 @@
 #include "PPProjectile.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 APPProjectile::APPProjectile()
 {
-	PrimaryActorTick.bCanEverTick = true;
-
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxComponent"));
 	SetRootComponent(BoxComponent);
 	BoxComponent->SetCollisionObjectType(ECollisionChannel::ECC_WorldDynamic);
@@ -19,17 +19,34 @@ APPProjectile::APPProjectile()
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
+	ProjectileMovementComponent->OnProjectileStop.AddUniqueDynamic(this, &ThisClass::OnProjectileStop);
 }
 
 void APPProjectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	if (GetNetMode() != ENetMode::NM_DedicatedServer)
+	{
+		if (TracePS)
+		{
+			UGameplayStatics::SpawnEmitterAttached(TracePS, RootComponent);
+		}
+	}
 }
 
-void APPProjectile::Tick(float DeltaTime)
+void APPProjectile::OnProjectileStop(const FHitResult& ImpactResult)
 {
-	Super::Tick(DeltaTime);
-
+	if (GetNetMode() != ENetMode::NM_DedicatedServer)
+	{
+		if (ImpactPS)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(this, ImpactPS, ImpactResult.ImpactPoint, ImpactResult.ImpactNormal.Rotation());
+		}
+		if (ImpactSC)
+		{
+			UGameplayStatics::SpawnSoundAtLocation(this, ImpactSC, ImpactResult.ImpactPoint, ImpactResult.ImpactNormal.Rotation());
+		}
+	}
+	Destroy();
 }
-

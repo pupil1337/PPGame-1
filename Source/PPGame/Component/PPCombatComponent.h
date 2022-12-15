@@ -46,11 +46,11 @@ protected:
 	
 	/** 开火 */
 	void Fire(bool bFire);
-	void OnFire(bool bFire);
+	void OnFire(bool bFire, const FVector_NetQuantize& ImpactPoint);
 	UFUNCTION(Server, Reliable)
-	void ServerFire(bool bFire);
+	void ServerFire(bool bFire, const FVector_NetQuantize& ImpactPoint);
 	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastFire(bool bFire);
+	void MulticastFire(bool bFire, const FVector_NetQuantize& ImpactPoint);
 
 	void TraceUnderCrosshairs(FHitResult& HitResult);
 
@@ -63,8 +63,5 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_Aiming)
 	bool bAiming;
-
-	UPROPERTY()
-	FVector HitTarget;
 };
 

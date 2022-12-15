@@ -31,9 +31,6 @@ void UPPCombatComponent::BeginPlay()
 void UPPCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	FHitResult HitResult;
-	TraceUnderCrosshairs(HitResult);
 }
 
 void UPPCombatComponent::EquipWeapon(APPWeapon* Weapon2Equip)
@@ -97,35 +94,38 @@ void UPPCombatComponent::OnRep_Aiming(bool OldbAiming)
 
 void UPPCombatComponent::Fire(bool bFire)
 {
+	FHitResult HitResult;
+	TraceUnderCrosshairs(HitResult);
+
 	if (GetOwnerRole() == ROLE_AutonomousProxy)
 	{
-		OnFire(bFire);
+		OnFire(bFire, HitResult.ImpactPoint);
 	}
-	ServerFire(bFire);
+	ServerFire(bFire, HitResult.ImpactPoint);
 }
 
-void UPPCombatComponent::OnFire(bool bFire)
+void UPPCombatComponent::OnFire(bool bFire, const FVector_NetQuantize& ImpactPoint)
 {
 	if (PPCharacter && EquippedWeapon)
 	{
 		if (bFire)
 		{
 			PPCharacter->PlayFireMontage(bAiming);
-			EquippedWeapon->Fire(HitTarget);
+			EquippedWeapon->Fire(ImpactPoint);
 		}
 	}
 }
 
-void UPPCombatComponent::ServerFire_Implementation(bool bFire)
+void UPPCombatComponent::ServerFire_Implementation(bool bFire, const FVector_NetQuantize& ImpactPoint)
 {
-	MulticastFire(bFire);
+	MulticastFire(bFire, ImpactPoint);
 }
 
-void UPPCombatComponent::MulticastFire_Implementation(bool bFire)
+void UPPCombatComponent::MulticastFire_Implementation(bool bFire, const FVector_NetQuantize& ImpactPoint)
 {
 	if (GetOwnerRole() != ROLE_AutonomousProxy)
 	{
-		OnFire(bFire);
+		OnFire(bFire, ImpactPoint);
 	}
 }
 
@@ -162,8 +162,7 @@ void UPPCombatComponent::TraceUnderCrosshairs(FHitResult& HitResult)
 		{
 			HitResult.ImpactPoint = End;
 		}
-		HitTarget = HitResult.ImpactPoint;
-		DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 10, FColor::Red);
+		// DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 10, FColor::Red);
 	}
 }
 
