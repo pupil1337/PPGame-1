@@ -8,6 +8,8 @@
 #include "Net/UnrealNetwork.h"
 #include "PPGame/GameFramework/PPCharacter.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
+#include "PPGame/Weapon/PPCartridge.h"
 
 APPWeapon::APPWeapon()
 {
@@ -82,6 +84,16 @@ void APPWeapon::Fire(const FVector& HitTarget)
 	if (FireAnim)
 	{
 		WeaponMesh->PlayAnimation(FireAnim, false);	
+	}
+	if (GetNetMode() != NM_DedicatedServer)
+	{
+		if (CartridgeClass)
+		{
+			if (const USkeletalMeshSocket* AmmoEjectSocket = WeaponMesh->GetSocketByName(FName("AmmoEject")))
+			{
+				GetWorld()->SpawnActor<APPCartridge>(CartridgeClass, AmmoEjectSocket->GetSocketTransform(WeaponMesh));
+			}
+		}
 	}
 }
 

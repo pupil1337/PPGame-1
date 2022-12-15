@@ -20,6 +20,7 @@ class USphereComponent;
 class UWidgetComponent;
 class APPCharacter;
 class UAnimationAsset;
+class APPCartridge;
 
 UCLASS()
 class PPGAME_API APPWeapon : public AActor
@@ -37,6 +38,9 @@ class PPGAME_API APPWeapon : public AActor
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UAnimationAsset> FireAnim;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<APPCartridge> CartridgeClass;
 	
 public:
 	APPWeapon();
