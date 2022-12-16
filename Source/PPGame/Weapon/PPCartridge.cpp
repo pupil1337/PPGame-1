@@ -4,10 +4,10 @@
 #include "PPCartridge.h"
 
 #include "Kismet/KismetMathLibrary.h"
-#include "Kismet/KismetSystemLibrary.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 APPCartridge::APPCartridge()
-	: bSound(true)
 {
 	InitialLifeSpan = 10.0f;
 	CartridgeStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CartridgeStaticMesh"));
@@ -36,10 +36,10 @@ void APPCartridge::Eject(FVector InitialVel)
 void APPCartridge::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
                          FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (bSound)
+	if (HitSC)
 	{
-		UKismetSystemLibrary::PrintString(this, "Cartridge Sound~");
+		UGameplayStatics::PlaySoundAtLocation(this, HitSC, Hit.ImpactPoint, Hit.ImpactNormal.Rotation());
 	}
-	bSound = false;
+	CartridgeStaticMesh->OnComponentHit.RemoveDynamic(this, &ThisClass::OnHit);
 }
 
