@@ -96,7 +96,8 @@ void APPWeapon::Fire(const FVector& HitTarget)
 		{
 			if (const USkeletalMeshSocket* AmmoEjectSocket = WeaponMesh->GetSocketByName(FName("AmmoEject")))
 			{
-				GetWorld()->SpawnActor<APPCartridge>(CartridgeClass, AmmoEjectSocket->GetSocketTransform(WeaponMesh));
+				APPCartridge* tCartridge = GetWorld()->SpawnActor<APPCartridge>(CartridgeClass, AmmoEjectSocket->GetSocketTransform(WeaponMesh));
+				tCartridge->Eject(GetOwner()->GetVelocity());
 			}
 		}
 	}

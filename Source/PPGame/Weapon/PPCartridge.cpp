@@ -3,6 +3,7 @@
 
 #include "PPCartridge.h"
 
+#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 APPCartridge::APPCartridge()
@@ -11,7 +12,7 @@ APPCartridge::APPCartridge()
 	InitialLifeSpan = 10.0f;
 	CartridgeStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CartridgeStaticMesh"));
 	SetRootComponent(CartridgeStaticMesh);
-	CartridgeStaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
+	CartridgeStaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::PhysicsOnly);
 	CartridgeStaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	CartridgeStaticMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
 	CartridgeStaticMesh->SetSimulatePhysics(true);
@@ -24,6 +25,12 @@ void APPCartridge::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	
 	CartridgeStaticMesh->OnComponentHit.AddUniqueDynamic(this, &ThisClass::OnHit);
+}
+
+void APPCartridge::Eject(FVector InitialVel)
+{
+	FVector EjectVel = UKismetMathLibrary::TransformDirection(GetActorTransform(), EjectVelocity);
+	CartridgeStaticMesh->SetPhysicsLinearVelocity(InitialVel + EjectVel);
 }
 
 void APPCartridge::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,

@@ -6,19 +6,24 @@
 #include "GameFramework/Actor.h"
 #include "PPCartridge.generated.h"
 
+class APPWeapon;
 class UStaticMeshComponent;
 
 UCLASS()
 class PPGAME_API APPCartridge : public AActor
 {
 	GENERATED_BODY()
-
+	
 	UPROPERTY(VisibleDefaultsOnly)
 	TObjectPtr<UStaticMeshComponent> CartridgeStaticMesh;
+
+	UPROPERTY(EditDefaultsOnly)
+	FVector EjectVelocity;
 	
 public:
 	APPCartridge();
 	virtual void PostInitializeComponents() override;
+	void Eject(FVector InitialVel);
 	
 protected:
 	UFUNCTION()
