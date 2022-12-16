@@ -19,8 +19,14 @@ APPProjectile::APPProjectile()
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->bRotationFollowsVelocity = true;
-	ProjectileMovementComponent->OnProjectileStop.AddUniqueDynamic(this, &ThisClass::OnProjectileStop);
 }
+
+void APPProjectile::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	ProjectileMovementComponent->OnProjectileStop.AddUniqueDynamic(this, &ThisClass::OnProjectileStop);
+}	
 
 void APPProjectile::BeginPlay()
 {

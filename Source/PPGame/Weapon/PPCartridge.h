@@ -18,6 +18,7 @@ class PPGAME_API APPCartridge : public AActor
 	
 public:
 	APPCartridge();
+	virtual void PostInitializeComponents() override;
 	
 protected:
 	UFUNCTION()

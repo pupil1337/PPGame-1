@@ -45,6 +45,7 @@ class PPGAME_API APPWeapon : public AActor
 public:
 	APPWeapon();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void PostInitializeComponents() override;
 
 protected:
 	virtual void BeginPlay() override;

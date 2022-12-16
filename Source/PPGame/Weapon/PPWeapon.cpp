@@ -42,16 +42,21 @@ void APPWeapon::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetim
 	DOREPLIFETIME_CONDITION(APPWeapon, WeaponState, COND_None)
 }
 
-void APPWeapon::BeginPlay()
+void APPWeapon::PostInitializeComponents()
 {
-	Super::BeginPlay();
-
+	Super::PostInitializeComponents();
+	
 	if (HasAuthority())
 	{
 		AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		AreaSphere->OnComponentBeginOverlap.AddUniqueDynamic(this, &ThisClass::OnComponentBeginOverlap);
 		AreaSphere->OnComponentEndOverlap.AddUniqueDynamic(this, &ThisClass::OnComponentEndOverlap);
 	}
+}
+
+void APPWeapon::BeginPlay()
+{
+	Super::BeginPlay();
 }
 
 void APPWeapon::SetWeaponState(EWeaponState State)

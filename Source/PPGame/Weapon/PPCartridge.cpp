@@ -12,16 +12,22 @@ APPCartridge::APPCartridge()
 	CartridgeStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CartridgeStaticMesh"));
 	SetRootComponent(CartridgeStaticMesh);
 	CartridgeStaticMesh->SetCollisionEnabled(ECollisionEnabled::Type::QueryAndPhysics);
-	CartridgeStaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
-	CartridgeStaticMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
+	CartridgeStaticMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	CartridgeStaticMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldStatic, ECollisionResponse::ECR_Block);
 	CartridgeStaticMesh->SetSimulatePhysics(true);
 	CartridgeStaticMesh->SetEnableGravity(true);
 	CartridgeStaticMesh->SetNotifyRigidBodyCollision(true);
+}
+
+void APPCartridge::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	
 	CartridgeStaticMesh->OnComponentHit.AddUniqueDynamic(this, &ThisClass::OnHit);
 }
 
 void APPCartridge::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-	FVector NormalImpulse, const FHitResult& Hit)
+                         FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (bSound)
 	{

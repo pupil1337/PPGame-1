@@ -32,6 +32,7 @@ class PPGAME_API APPProjectile : public AActor
 	TObjectPtr<USoundCue> ImpactSC;
 public:
 	APPProjectile();
+	virtual void PostInitializeComponents() override;
 
 protected:
 	virtual void BeginPlay() override;
